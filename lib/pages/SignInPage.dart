@@ -44,7 +44,7 @@ class _SignInPageState extends State<SignInPage> {
         Popup.show('Success', 'Sign in successful', context);
         
         // Navigate to home page.
-        //Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.pushReplacementNamed(context, '/home');
       } else {
         // Show error message.
         Popup.show('Error', body['errors'], context);
