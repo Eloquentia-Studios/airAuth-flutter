@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'pages/HomePage.dart';
 import 'pages/SignInPage.dart';
 import 'service/storage.dart';
 import 'pages/LoadingPage.dart';
@@ -23,9 +24,9 @@ class MyApp extends StatelessWidget {
       home: const LoadingPage(title: 'airAuth - Loading'),
       routes: {
         '/signin': (BuildContext context) =>
-            const SignInPage(title: 'airAuth - Sign in'),
+            const SignInPage(title: 'airAuth'),
         '/home': (BuildContext context) =>
-            const SignInPage(title: 'airAuth - Home'),
+            const HomePage(title: 'airAuth'),
       },
     );
   }
