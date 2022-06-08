@@ -1,3 +1,4 @@
+import 'package:airauth/components/OtpItem.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,11 +18,12 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
         ),
         body: Container(
-          margin: const EdgeInsets.all(30),
+          margin: const EdgeInsets.all(5),
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
+                const OtpItem(),
               ],
             ),
           ),
