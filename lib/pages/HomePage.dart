@@ -10,8 +10,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  var devOtpItems = <Widget>[];
+
   @override
   Widget build(BuildContext context) {
+    for (int i = 0; i < 10; i++) {
+      devOtpItems.add(OtpItem());
+    }
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
@@ -19,14 +25,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Container(
           margin: const EdgeInsets.all(5),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                const OtpItem(),
-              ],
-            ),
-          ),
+          child: Center(child: ListView(children: devOtpItems)),
         ));
   }
 }
