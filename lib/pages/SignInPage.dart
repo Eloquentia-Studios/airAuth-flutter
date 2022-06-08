@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../service/http.dart';
+import 'dart:convert';
+import '../service/popup.dart';
+import '../service/storage.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({Key? key, required this.title}) : super(key: key);
@@ -9,8 +13,49 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  int _counter = 0;
-  ImageProvider _logoProvider = AssetImage('images/logo/dark-logo.png');
+  final serverAddressController = TextEditingController();
+  final identifierController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  void signIn() async {
+    try {
+      // Get request values.
+      final serverAddress = serverAddressController.text;
+      final identifier = identifierController.text;
+      final password = passwordController.text;
+
+      // Send sign in request to server.
+      final signInUrl = '$serverAddress/api/v1/user/login';
+      final response = await Http.post(signInUrl, {}, {
+        'identifier': identifier,
+        'password': password,
+      });
+
+      // Parse response.
+      final body = json.decode(response.body);
+      if (body['token'] != null) {
+        // Save token to storage.
+        await Storage.set('token', body['token']);
+        
+        // Save server address to storage.
+        await Storage.set('serverAddress', serverAddress);
+
+        // Show success popup.
+        Popup.show('Success', 'Sign in successful', context);
+        
+        // Navigate to home page.
+        //Navigator.of(context).pushReplacementNamed('/home');
+      } else {
+        // Show error message.
+        Popup.show('Error', body['errors'], context);
+      }
+
+      // Clear password field
+      //passwordController.clear();
+    } catch (e) {
+      Popup.show('Error', e.toString(), context);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,27 +70,36 @@ class _SignInPageState extends State<SignInPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image(image: _logoProvider, height: 65, width: 200,),
+                const Image(
+                  image: AssetImage('images/logo/dark-logo.png'),
+                  height: 65,
+                  width: 200,
+                ),
                 // Server address input
                 TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Server address',
                     hintText: 'https://airauth.example.com:7331',
                   ),
+                  controller: serverAddressController,
                 ),
 
                 // Username or email text field
                 TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Username or email',
-                  ),
-                ),
+                    decoration: const InputDecoration(
+                      labelText: 'Username or email',
+                    ),
+                    controller: identifierController),
 
                 // Password text field
                 TextField(
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     labelText: 'Password',
                   ),
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  controller: passwordController,
                 ),
                 Row(children: [Text('')]),
                 Row(
@@ -58,15 +112,20 @@ class _SignInPageState extends State<SignInPage> {
                     ),
 
                     // Sign in button
-                    ElevatedButton(
-                      child: Text('Sign in'),
-                      onPressed: () {},
-                    ),
+                    ElevatedButton(child: Text('Sign in'), onPressed: signIn),
                   ],
                 )
               ],
             ),
           ),
         ));
+  }
+
+  @override
+  void dispose() {
+    serverAddressController.dispose();
+    identifierController.dispose();
+    passwordController.dispose();
+    super.dispose();
   }
 }
