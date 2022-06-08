@@ -47,11 +47,11 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.pushReplacementNamed(context, '/home');
       } else {
         // Show error message.
-        Popup.show('Error', body['errors'], context);
+        Popup.show('Error', body['errors'][0], context);
       }
 
       // Clear password field
-      //passwordController.clear();
+      passwordController.clear();
     } catch (e) {
       Popup.show('Error', e.toString(), context);
     }
