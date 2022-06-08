@@ -13,20 +13,20 @@ class _OtpItemState extends State<OtpItem> {
     return Center(
       child: Card(
         child: Row(children: [
-          Expanded(
-            child: const Padding(
-                padding: const EdgeInsets.all(0),
+          const Expanded(
+            child: Padding(
+                padding: EdgeInsets.all(0),
                 child: ListTile(
                   title: Text('Issuer'),
                   subtitle: Text('Label'),
                 )),
           ),
-          new Padding(
+          Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
-              children: [
+              children: const [
                 Padding(
-                    padding: const EdgeInsets.all(4),
+                    padding: EdgeInsets.all(4),
                     child: Text('696 420',
                         style: TextStyle(
                             fontSize: 25, fontWeight: FontWeight.w500))),
