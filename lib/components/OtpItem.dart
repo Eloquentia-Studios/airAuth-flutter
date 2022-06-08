@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 class OtpItem extends StatefulWidget {
@@ -8,6 +10,8 @@ class OtpItem extends StatefulWidget {
 }
 
 class _OtpItemState extends State<OtpItem> {
+  var _isShowing = false;
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -24,12 +28,18 @@ class _OtpItemState extends State<OtpItem> {
           Padding(
             padding: const EdgeInsets.all(10),
             child: Column(
-              children: const [
+              children: [
                 Padding(
-                    padding: EdgeInsets.all(4),
-                    child: Text('696 420',
-                        style: TextStyle(
-                            fontSize: 25, fontWeight: FontWeight.w500))),
+                    padding: const EdgeInsets.all(4),
+                    child: _isShowing
+                        ? Text('420 420',
+                            style: TextStyle(
+                                fontSize: 25, fontWeight: FontWeight.w500))
+                        : Icon(
+                            Icons.touch_app_sharp,
+                            color: Colors.pink,
+                            size: 30,
+                          )),
               ],
             ),
           ),
