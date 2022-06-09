@@ -37,8 +37,8 @@ class _LoadingPageState extends State<LoadingPage> {
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Image(
+          children: const <Widget>[
+            Image(
               image: AssetImage('images/logo/dark-logo.png'),
               height: 65,
               width: 200,

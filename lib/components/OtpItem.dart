@@ -1,9 +1,14 @@
 import 'dart:ui';
 
+import 'package:airauth/models/Otp.dart';
 import 'package:flutter/material.dart';
 
 class OtpItem extends StatefulWidget {
-  const OtpItem({Key? key}) : super(key: key);
+  late final Otp otp;
+
+  //const OtpItem({Key? key}) : super(key: key);
+
+  OtpItem(this.otp, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _OtpItemState();
@@ -17,12 +22,12 @@ class _OtpItemState extends State<OtpItem> {
     return Center(
       child: Card(
         child: Row(children: [
-          const Expanded(
+          Expanded(
             child: Padding(
                 padding: EdgeInsets.all(0),
                 child: ListTile(
-                  title: Text('Issuer'),
-                  subtitle: Text('Label'),
+                  title: Text(widget.otp.id),
+                  subtitle: Text(widget.otp.url),
                 )),
           ),
           Padding(
