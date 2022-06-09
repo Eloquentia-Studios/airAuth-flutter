@@ -1,7 +1,10 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:airauth/models/Otp.dart';
 import 'package:flutter/material.dart';
+
+import '../service/time.dart';
 
 class OtpItem extends StatefulWidget {
   late final Otp otp;
@@ -14,7 +17,9 @@ class OtpItem extends StatefulWidget {
   State<StatefulWidget> createState() => _OtpItemState();
 }
 
-class _OtpItemState extends State<OtpItem> {
+class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
+  late Timer updateTimer;
+  var _progress = 0.0;
   var _isShowing = false;
   var _otpCode = '';
 
@@ -25,8 +30,29 @@ class _OtpItemState extends State<OtpItem> {
     });
   }
 
+  void updateProgress() {
+    var period = widget.otp.period * 1000;
+    var timeLeft = Time.getTimeLeftInPeriod(period);
+    var progress = 1 - timeLeft / period;
+
+    setState(() {
+      _progress = progress;
+    });
+  }
+
+  @override
+  void initState() {
+    updateProgress();
+    updateTimer = Timer.periodic(
+        Duration(milliseconds: 100), (Timer t) => {updateProgress()});
+    print(updateTimer.isActive);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+    updateProgress();
+
     return Center(
       child: Card(
         child: Row(children: [
@@ -45,21 +71,45 @@ class _OtpItemState extends State<OtpItem> {
                 Padding(
                     padding: const EdgeInsets.all(4),
                     child: _isShowing
-                        ? Text(_otpCode,
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.w500))
+                        ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                                SizedBox(
+                                    child: Text(_otpCode,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                          fontWeight: FontWeight.w500,
+                                        )),
+                                    width: 100),
+                                SizedBox(
+                                    child: LinearProgressIndicator(
+                                        value: _progress,
+                                        backgroundColor: Colors.pink,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                                Colors.white)),
+                                    height: 3,
+                                    width: 100),
+                              ])
                         : IconButton(
                             onPressed: tapToReveal,
                             icon: const Icon(
                               Icons.touch_app_sharp,
                               color: Colors.pink,
                               size: 30,
-                            )))
+                            ))),
               ],
             ),
           ),
         ]),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }
