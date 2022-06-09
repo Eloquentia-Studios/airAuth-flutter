@@ -23,7 +23,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// Update local otp storage.
-  void _updateOtpItems() async {
+  Future<void> _updateOtpItems() async {
     try {
       // Load otp items from server.
       await Otps.updateOpts();
@@ -64,7 +64,10 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Container(
           margin: const EdgeInsets.all(5),
-          child: Center(child: ListView(children: otpWidgets)),
+          child: Center(
+              child: RefreshIndicator(
+                  child: ListView(children: otpWidgets),
+                  onRefresh: _updateOtpItems)),
         ));
   }
 }
