@@ -26,8 +26,8 @@ class _OtpItemState extends State<OtpItem> {
             child: Padding(
                 padding: EdgeInsets.all(0),
                 child: ListTile(
-                  title: Text(widget.otp.id),
-                  subtitle: Text(widget.otp.url),
+                  title: Text(widget.otp.issuer),
+                  subtitle: Text(widget.otp.label),
                 )),
           ),
           Padding(

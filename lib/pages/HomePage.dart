@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
+
   final String title;
 
   @override
@@ -12,6 +13,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var otpWidgets = <Widget>[];
+
+  @override
+  void initState() {
+    super.initState();
+    _updateOtpItems();
+  }
 
   /// Update local otp storage.
   void _updateOtpItems() async {
@@ -29,8 +36,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    _updateOtpItems();
-
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
