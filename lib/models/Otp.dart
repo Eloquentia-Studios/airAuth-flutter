@@ -1,3 +1,5 @@
+import 'package:otp/otp.dart';
+
 class Otp {
   late final String id;
   late final String url;
@@ -7,7 +9,7 @@ class Otp {
   late String issuer;
   late int digits;
   late int period;
-  late String algorithm;
+  late Algorithm algorithm;
 
   Otp(this.id, this.url) {
     parseUrl();
@@ -24,7 +26,7 @@ class Otp {
     issuer = (query['issuer'] ?? '').trim();
     digits = int.parse(query['digits'] ?? '6');
     period = int.parse(query['period'] ?? '30');
-    algorithm = query['algorithm'] ?? 'SHA1';
+    algorithm = _stringToAlgorithm(query['algorithm'] ?? 'SHA1');
 
     // Remove slash after label.
     if (label.endsWith('/')) {
@@ -48,8 +50,40 @@ class Otp {
     }
   }
 
+  String getCode() {
+    try {
+      // Calculate time.
+      double time = DateTime.now().millisecondsSinceEpoch / 1000;
+      time = time - (time % period);
+      time *= 1000;
+      int timeInt = time.toInt();
+
+      return OTP.generateTOTPCodeString(
+        secret,
+        timeInt,
+        interval: period,
+        length: digits,
+        algorithm: algorithm,
+      );
+    } catch (e) {
+      return '';
+    }
+  }
+
   /// Create an Otp from json.
   static Otp fromJson(dynamic otpData) {
     return Otp(otpData['id'], otpData['url']);
+  }
+
+  /// Convert algorithm string to enum.
+  static Algorithm _stringToAlgorithm(String algorithm) {
+    switch (algorithm.trim().toUpperCase()) {
+      case 'SHA256':
+        return Algorithm.SHA256;
+      case 'SHA512':
+        return Algorithm.SHA512;
+      default:
+        return Algorithm.SHA1;
+    }
   }
 }
