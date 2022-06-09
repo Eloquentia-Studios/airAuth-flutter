@@ -11,6 +11,10 @@ class QRReaderPage extends StatefulWidget {
 }
 
 class _QRReaderPageState extends State<QRReaderPage> {
+  void _goBack() {
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
@@ -49,7 +53,7 @@ class _QRReaderPageState extends State<QRReaderPage> {
                     size: 35,
                     color: Color.fromARGB(255, 225, 225, 225),
                   ),
-                  onPressed: () {},
+                  onPressed: _goBack,
                 ),
               ),
             ),
