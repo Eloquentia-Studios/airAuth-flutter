@@ -16,6 +16,14 @@ class OtpItem extends StatefulWidget {
 
 class _OtpItemState extends State<OtpItem> {
   var _isShowing = false;
+  var _otpCode = '';
+
+  void tapToReveal() {
+    setState(() {
+      _otpCode = widget.otp.getCode();
+      _isShowing = !_isShowing;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +34,7 @@ class _OtpItemState extends State<OtpItem> {
             child: Padding(
                 padding: EdgeInsets.all(0),
                 child: ListTile(
-                  title: Text(widget.otp.issuer + widget.otp.getCode()),
+                  title: Text(widget.otp.issuer),
                   subtitle: Text(widget.otp.label),
                 )),
           ),
@@ -37,14 +45,16 @@ class _OtpItemState extends State<OtpItem> {
                 Padding(
                     padding: const EdgeInsets.all(4),
                     child: _isShowing
-                        ? Text('420 420',
+                        ? Text(_otpCode,
                             style: TextStyle(
                                 fontSize: 25, fontWeight: FontWeight.w500))
-                        : Icon(
-                            Icons.touch_app_sharp,
-                            color: Colors.pink,
-                            size: 30,
-                          )),
+                        : IconButton(
+                            onPressed: tapToReveal,
+                            icon: const Icon(
+                              Icons.touch_app_sharp,
+                              color: Colors.pink,
+                              size: 30,
+                            )))
               ],
             ),
           ),

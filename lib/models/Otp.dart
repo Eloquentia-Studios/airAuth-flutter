@@ -1,4 +1,5 @@
 import 'package:otp/otp.dart';
+import '../service/time.dart';
 
 class Otp {
   late final String id;
@@ -52,19 +53,17 @@ class Otp {
 
   String getCode() {
     try {
-      // Calculate time.
-      double time = DateTime.now().millisecondsSinceEpoch / 1000;
-      time = time - (time % period);
-      time *= 1000;
-      int timeInt = time.toInt();
-
-      return OTP.generateTOTPCodeString(
+      String code = OTP.generateTOTPCodeString(
         secret,
-        timeInt,
+        Time.getLastPeriod(period),
         interval: period,
         length: digits,
         algorithm: algorithm,
       );
+
+      // Add space every 3 digits.
+      return code.replaceAllMapped(
+          RegExp(r'(.{3})'), (match) => '${match[0]} ');
     } catch (e) {
       return '';
     }
