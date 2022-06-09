@@ -30,8 +30,13 @@ class _HomePageState extends State<HomePage> {
       _updateOtpWidgets();
     } catch (e) {
       ScaffoldMessenger.of(_context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to get OTP items from server.'),
+        SnackBar(
+          content: const Text('Failed to get OTP items from server.'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: Color.fromARGB(202, 0, 0, 0),
         ),
       );
     }
