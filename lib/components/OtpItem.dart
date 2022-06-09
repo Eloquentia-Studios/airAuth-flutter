@@ -44,7 +44,7 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
   void initState() {
     updateProgress();
     updateTimer = Timer.periodic(
-        Duration(milliseconds: 100), (Timer t) => {updateProgress()});
+        Duration(milliseconds: 10), (Timer t) => {updateProgress()});
     print(updateTimer.isActive);
     super.initState();
   }
