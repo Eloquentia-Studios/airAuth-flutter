@@ -4,8 +4,6 @@ import '../models/Otp.dart';
 import 'http.dart';
 
 class Otps {
-  static Future<dynamic> loadOtps() async {}
-
   /// Get otp items from storage.
   static Future<List<Otp>> getOpts() async {
     final otpJson = await Storage.get('otps');
@@ -22,12 +20,8 @@ class Otps {
 
   /// Update the otps for the user.
   static Future<void> updateOpts() async {
-    try {
-      final otps = await _fetchRemoteOtps();
-      await _saveOtps(otps);
-    } catch (e) {
-      print(e.toString());
-    }
+    final otps = await _fetchRemoteOtps();
+    await _saveOtps(otps);
   }
 
   /// Saves the [otps] to secure storage.
@@ -42,9 +36,12 @@ class Otps {
     final serverAddress = await Storage.get('serverAddress');
 
     // Request otps from server.
-    final response = await Http.get('$serverAddress/api/v1/otp', {
-      'Authorization': 'Bearer ${await Storage.get('token')}',
-    });
+    final response = await Http.get(
+      '$serverAddress/api/v1/otp',
+      {
+        'Authorization': 'Bearer ${await Storage.get('token')}',
+      },
+    );
 
     // Check response status.
     if (response.statusCode != 200) {

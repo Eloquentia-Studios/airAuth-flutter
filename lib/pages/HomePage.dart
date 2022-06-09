@@ -13,6 +13,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   var otpWidgets = <Widget>[];
+  late BuildContext _context;
 
   @override
   void initState() {
@@ -23,9 +24,17 @@ class _HomePageState extends State<HomePage> {
 
   /// Update local otp storage.
   void _updateOtpItems() async {
-    // Load otp items from server.
-    await Otps.updateOpts();
-    _updateOtpWidgets();
+    try {
+      // Load otp items from server.
+      await Otps.updateOpts();
+      _updateOtpWidgets();
+    } catch (e) {
+      ScaffoldMessenger.of(_context).showSnackBar(
+        SnackBar(
+          content: const Text('Failed to request OTP items from server.'),
+        ),
+      );
+    }
   }
 
   /// Load from local otp storage.
@@ -41,6 +50,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    _context = context;
+
     return Scaffold(
         appBar: AppBar(
           title: Text(widget.title),
