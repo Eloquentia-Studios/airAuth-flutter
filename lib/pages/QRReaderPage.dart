@@ -1,3 +1,5 @@
+import 'package:airauth/service/otps.dart';
+import 'package:airauth/service/validation.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 
@@ -11,6 +13,35 @@ class QRReaderPage extends StatefulWidget {
 }
 
 class _QRReaderPageState extends State<QRReaderPage> {
+  var _isProcessingQr = false;
+
+  /// Add a scanned otp to the server.
+  Future<void> _addScannedOtp(String? value) async {
+    try {
+      if (_isProcessingQr) return;
+      if (value == null) return;
+      _isProcessingQr = true;
+
+      if (!Validation.validOTPUrl(value)) throw Exception('Invalid OTP URL.');
+      await Otps.addOtp(value);
+      await Otps.updateOpts();
+      Navigator.pop(context);
+    } catch (e) {
+      _isProcessingQr = false;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: const Text('Failed to add OTP.'),
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(24),
+          ),
+          backgroundColor: Color.fromARGB(202, 0, 0, 0),
+        ),
+      );
+    }
+  }
+
+  /// Go back to home page.
   void _goBack() {
     Navigator.pop(context);
   }
@@ -29,9 +60,7 @@ class _QRReaderPageState extends State<QRReaderPage> {
         width: width,
         height: height,
         child: QrCamera(
-          qrCodeCallback: (code) {
-            print('QR code: $code');
-          },
+          qrCodeCallback: _addScannedOtp,
         ),
       ),
       SizedBox(

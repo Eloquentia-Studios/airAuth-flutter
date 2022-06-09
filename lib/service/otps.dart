@@ -54,4 +54,28 @@ class Otps {
     // Parse response.
     return json.decode(response.body);
   }
+
+  /// Add an otp to the server.
+  /// Throws an [error] if the request returns a status code other than 200.
+  static Future<void> addOtp(String otpUrl) async {
+    // Get server address and and token from storage.
+    final serverAddress = await Storage.get('serverAddress');
+
+    // Request otps from server.
+    final response = await Http.post(
+      '$serverAddress/api/v1/otp',
+      {
+        'Authorization': 'Bearer ${await Storage.get('token')}',
+      },
+      {"otpurl": otpUrl},
+    );
+
+    // Check response status.
+    if (response.statusCode != 200) {
+      throw Exception({
+        'status': response.statusCode,
+        'body': response.body,
+      });
+    }
+  }
 }
