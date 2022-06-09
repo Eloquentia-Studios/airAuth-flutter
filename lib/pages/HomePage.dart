@@ -53,6 +53,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /// Go to QR reader page.
+  void _addOTP() {
+    Navigator.pushNamed(_context, '/qrreader');
+  }
+
   @override
   Widget build(BuildContext context) {
     _context = context;
@@ -61,6 +66,12 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: Text(widget.title),
           centerTitle: true,
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: _addOTP,
+            ),
+          ],
         ),
         body: Container(
           margin: const EdgeInsets.all(5),

@@ -19,6 +19,7 @@ class OtpItem extends StatefulWidget {
 
 class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
   late Timer updateTimer;
+  bool _notDisposed = true;
   var _progress = 0.0;
   var _isShowing = false;
   var _otpCode = '';
@@ -36,9 +37,11 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
     var progress = 1 - timeLeft / period;
     if (progress > _progress) _otpCode = widget.otp.getCode();
 
-    setState(() {
-      _progress = progress;
-    });
+    if (_notDisposed) {
+      setState(() {
+        _progress = progress;
+      });
+    }
   }
 
   @override
@@ -111,6 +114,8 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    _notDisposed = false;
+    updateTimer.cancel();
     super.dispose();
   }
 }
