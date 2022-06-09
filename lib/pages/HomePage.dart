@@ -30,8 +30,8 @@ class _HomePageState extends State<HomePage> {
       _updateOtpWidgets();
     } catch (e) {
       ScaffoldMessenger.of(_context).showSnackBar(
-        SnackBar(
-          content: const Text('Failed to request OTP items from server.'),
+        const SnackBar(
+          content: Text('Failed to get OTP items from server.'),
         ),
       );
     }
