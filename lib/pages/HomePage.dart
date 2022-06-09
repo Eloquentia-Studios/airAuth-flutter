@@ -17,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    _updateOtpWidgets();
     _updateOtpItems();
   }
 
@@ -24,7 +25,11 @@ class _HomePageState extends State<HomePage> {
   void _updateOtpItems() async {
     // Load otp items from server.
     await Otps.updateOpts();
+    _updateOtpWidgets();
+  }
 
+  /// Load from local otp storage.
+  void _updateOtpWidgets() async {
     // Load otp items from storage.
     final otpItems = await Otps.getOpts();
 
