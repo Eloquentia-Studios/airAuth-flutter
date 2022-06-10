@@ -1,6 +1,8 @@
+import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:airauth/service/validation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 
 class QRReaderPage extends StatefulWidget {
@@ -25,8 +27,12 @@ class _QRReaderPageState extends State<QRReaderPage> {
       if (!Validation.validOTPUrl(value)) throw Exception('Invalid OTP URL.');
       await Otps.addOtp(value);
       await Otps.updateOpts();
+      final provider = Provider.of<OtpProvider>(context, listen: false);
+      provider.clear();
+      provider.addAll(await Otps.getOpts());
       Navigator.pop(context);
     } catch (e) {
+      print(e);
       _isProcessingQr = false;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(

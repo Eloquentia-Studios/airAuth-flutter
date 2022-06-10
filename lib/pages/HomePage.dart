@@ -1,6 +1,8 @@
 import 'package:airauth/components/OtpItem.dart';
+import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -12,13 +14,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  var otpWidgets = <Widget>[];
   late BuildContext _context;
 
   @override
   void initState() {
     super.initState();
-    _updateOtpWidgets();
     _updateOtpItems();
   }
 
@@ -27,7 +27,9 @@ class _HomePageState extends State<HomePage> {
     try {
       // Load otp items from server.
       await Otps.updateOpts();
-      _updateOtpWidgets();
+      final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
+      otpProvider.clear();
+      otpProvider.addAll(await Otps.getOpts());
     } catch (e) {
       ScaffoldMessenger.of(_context).showSnackBar(
         SnackBar(
@@ -42,17 +44,6 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  /// Load from local otp storage.
-  void _updateOtpWidgets() async {
-    // Load otp items from storage.
-    final otpItems = await Otps.getOpts();
-
-    // Update otp widgets.
-    setState(() {
-      otpWidgets = otpItems.map((otp) => OtpItem(otp)).toList();
-    });
-  }
-
   /// Go to QR reader page.
   void _addOTP() {
     Navigator.pushNamed(_context, '/qrreader');
@@ -61,6 +52,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     _context = context;
+    final otpWidgets = Provider.of<OtpProvider>(context).otpItems;
 
     return Scaffold(
         appBar: AppBar(

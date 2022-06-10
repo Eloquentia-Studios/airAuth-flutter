@@ -198,6 +198,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.4"
+  nested:
+    dependency: transitive
+    description:
+      name: nested
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
   otp:
     dependency: "direct main"
     description:
@@ -219,6 +226,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.2"
+  provider:
+    dependency: "direct main"
+    description:
+      name: provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "6.0.3"
   qr_mobile_vision:
     dependency: "direct main"
     description:

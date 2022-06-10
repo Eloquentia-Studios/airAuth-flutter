@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'pages/HomePage.dart';
 import 'pages/QRReaderPage.dart';
 import 'pages/SignInPage.dart';
+import 'providers/otp_provider.dart';
 import 'service/storage.dart';
 import 'pages/LoadingPage.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => OtpProvider(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
