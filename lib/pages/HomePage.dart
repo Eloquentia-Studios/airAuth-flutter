@@ -45,7 +45,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// Go to QR reader page.
-  void _addOTP() {
+  void _scanQR() {
     Navigator.pushNamed(_context, '/qrreader');
   }
 
@@ -59,9 +59,23 @@ class _HomePageState extends State<HomePage> {
           title: Text(widget.title),
           centerTitle: true,
           actions: [
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: _addOTP,
+            PopupMenuButton(
+              onSelected: (value) {
+                if (value == 'add_qr') {
+                  _scanQR();
+                }
+              },
+              itemBuilder: (context) => [
+                const PopupMenuItem(
+                  value: 'add_qr',
+                  child: Text('Scan QR'),
+                ),
+                const PopupMenuItem(
+                  value: 'add_manual',
+                  child: Text('Manual code'),
+                ),
+                const PopupMenuItem(value: 'settings', child: Text('Settings'))
+              ],
             ),
           ],
         ),
