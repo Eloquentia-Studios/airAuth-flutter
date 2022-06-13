@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'package:airauth/models/Otp.dart';
+import 'package:airauth/models/otp.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

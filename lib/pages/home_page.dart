@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'package:airauth/components/OtpItem.dart';
+import 'package:airauth/components/otp_item.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../components/ManualOtpEntry.dart';
+import '../components/manual_otp_entry.dart';
 import '../service/popup.dart';
 
 class HomePage extends StatefulWidget {

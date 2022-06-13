@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/storage.dart';
-import '../models/Otp.dart';
+import '../models/otp.dart';
 import 'http.dart';
 
 class Otps {

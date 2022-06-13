@@ -1,6 +1,6 @@
-import 'package:airauth/models/Otp.dart';
+import 'package:airauth/models/otp.dart';
 import 'package:flutter/material.dart';
-import '../components/OtpItem.dart';
+import '../components/otp_item.dart';
 import '../service/otps.dart';
 import '../service/validation.dart';
 
