@@ -16,11 +16,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late BuildContext _context;
+  bool firstLoad = true;
 
   @override
   void initState() {
     super.initState();
-    _updateOtpItemsFromServer();
   }
 
   /// Fetch latest OTPs from server.
@@ -105,6 +105,12 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // Update context.
     _context = context;
+
+    // Update OTP items from server on first load.
+    if (firstLoad) {
+      firstLoad = false;
+      _updateOtpItemsFromServer();
+    }
 
     // Get all OTP items from provider.
     final otpProvider = Provider.of<OtpProvider>(context);
