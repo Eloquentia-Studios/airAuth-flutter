@@ -42,7 +42,7 @@ class ManualOtpEntry {
     );
   }
 
-  /// Show the form. OnClose function will use the values in this order: [issuer], [label], [secret].
+  /// Show the form. OnClose function will use the values in this order: [_issuer], [_label], [_secret].
   static void showForm(
       BuildContext context, Function(String, String, String) onClose) {
     final moe = ManualOtpEntry._(onClose);

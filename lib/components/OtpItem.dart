@@ -42,7 +42,7 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
   /// Update otp code and progress.
   void _updateProgress() {
     // Calculate progress.
-    var period = widget.otp.period * 1000;
+    var period = widget.otp.getPeriod() * 1000;
     var timeLeft = Time.getTimeLeftInPeriod(period);
     var progress = 1 - (timeLeft / period);
 
@@ -94,8 +94,8 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
                     child: Padding(
                         padding: const EdgeInsets.all(0),
                         child: ListTile(
-                          title: Text(widget.otp.issuer),
-                          subtitle: Text(widget.otp.label),
+                          title: Text(widget.otp.getIssuer()),
+                          subtitle: Text(widget.otp.getLabel()),
                         )),
                   ),
                   Padding(

@@ -69,14 +69,14 @@ class _HomePageState extends State<HomePage> {
       // Confirm deletion.
       final answer = await Popup.confirm(
           'Are you sure?',
-          'Do you want to delete ${item.otp.label} ${item.otp.issuer}?',
+          'Do you want to delete ${item.otp.getLabel()} ${item.otp.getIssuer()}?',
           context);
 
       // Delete item if confirmed.
       if (answer) {
         if (!mounted) return false;
         final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
-        await otpProvider.deleteFromServer(item.otp.id);
+        await otpProvider.deleteFromServer(item.otp.getId());
       }
 
       return answer;
@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
               itemBuilder: (context, index) {
                 final item = otpWidgets[index];
                 return Dismissible(
-                  key: Key(item.otp.id),
+                  key: Key(item.otp.getId()),
                   confirmDismiss: (DismissDirection direction) async =>
                       await _dismissItem(direction, item),
                   onDismissed: (DismissDirection direction) =>
