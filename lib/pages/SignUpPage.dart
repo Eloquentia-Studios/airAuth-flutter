@@ -1,31 +1,32 @@
 import 'package:airauth/service/authentication.dart';
 import 'package:flutter/material.dart';
-import '../service/http.dart';
-import 'dart:convert';
 import '../service/popup.dart';
-import '../service/storage.dart';
 import '../service/validation.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final serverAddressController = TextEditingController();
-  final usernameController = TextEditingController();
-  final emailController = TextEditingController();
-  final phoneController = TextEditingController();
-  final passwordController = TextEditingController();
-  final repeatPasswordController = TextEditingController();
+  // Initialize form controllers.
+  final _serverAddressController = TextEditingController();
+  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _repeatPasswordController = TextEditingController();
+
+  // Create a global key that uniquely identifies the Form widget.
   final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
     super.initState();
+
+    // Fetch server address from storage and update the server address controller.
     _updateServerAddress();
   }
 
@@ -33,25 +34,26 @@ class _SignUpPageState extends State<SignUpPage> {
   void _updateServerAddress() async {
     try {
       final serverAddress = await Authentication.getServerAddress();
-      serverAddressController.text = serverAddress;
-    } catch (e) {}
+      _serverAddressController.text = serverAddress;
+    } catch (_) {}
   }
 
   /// Sign up.
   Future<void> signUp() async {
     try {
       // Get request values.
-      final serverAddress = serverAddressController.text;
-      final username = usernameController.text;
-      final email = emailController.text;
-      final phoneNumber = phoneController.text;
-      final password = passwordController.text;
+      final serverAddress = _serverAddressController.text;
+      final username = _usernameController.text;
+      final email = _emailController.text;
+      final phoneNumber = _phoneController.text;
+      final password = _passwordController.text;
 
       // Send sign up request to server.
       await Authentication.signUp(
           serverAddress, username, email, phoneNumber, password);
 
       // Navigate to sign in page.
+      if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/signin');
     } catch (e) {
       Popup.show('Error', e.toString(), context);
@@ -61,6 +63,14 @@ class _SignUpPageState extends State<SignUpPage> {
   /// Navigate to sign in page.
   void signIn() {
     Navigator.pushReplacementNamed(context, '/signin');
+  }
+
+  /// Check if both passwords match.
+  String? passwordsMatch(String? value) {
+    if (Validation.isEqual(_passwordController.text, value)) {
+      return null;
+    }
+    return 'Passwords do not match.';
   }
 
   @override
@@ -80,17 +90,14 @@ class _SignUpPageState extends State<SignUpPage> {
                     height: 65,
                     width: 200,
                   ),
+
+                  // Server address.
                   TextFormField(
-                    controller: serverAddressController,
+                    controller: _serverAddressController,
                     decoration: const InputDecoration(
                       labelText: 'Server Address',
                     ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Server Address is required';
-                      }
-                      return Validation.isValidServerUrl(value);
-                    },
+                    validator: (value) => Validation.isValidServerUrl(value),
                   ),
 
                   // Username text field
@@ -98,38 +105,24 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: const InputDecoration(
                         labelText: 'Username',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Username is required';
-                        }
-                        return Validation.isValidUsername(value);
-                      },
-                      controller: usernameController),
+                      validator: (value) => Validation.isValidUsername(value),
+                      controller: _usernameController),
 
                   // Email text field
                   TextFormField(
                       decoration: const InputDecoration(
                           labelText: 'Email', hintText: 'example@example.com'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Email is required';
-                        }
-                        return Validation.isValidEmail(value);
-                      },
-                      controller: emailController),
+                      validator: (value) => Validation.isValidEmail(value),
+                      controller: _emailController),
 
                   // Phone number text field
                   TextFormField(
                       decoration: const InputDecoration(
                         labelText: 'Phone number (optional)',
                       ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return null;
-                        }
-                        return Validation.isValidPhoneNumber(value);
-                      },
-                      controller: phoneController),
+                      validator: (value) =>
+                          Validation.isValidPhoneNumber(value),
+                      controller: _phoneController),
 
                   // Password text field
                   TextFormField(
@@ -140,15 +133,11 @@ class _SignUpPageState extends State<SignUpPage> {
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Password is required';
-                      }
-                      return Validation.isValidPassword(value);
-                    },
-                    controller: passwordController,
+                    validator: (value) => Validation.isValidPassword(value),
+                    controller: _passwordController,
                   ),
 
+                  // Confirm password text field
                   TextFormField(
                     decoration: const InputDecoration(
                       labelText: 'Confirm Password',
@@ -156,15 +145,9 @@ class _SignUpPageState extends State<SignUpPage> {
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
-                    validator: (value) {
-                      if (value == null || value != passwordController.text) {
-                        return 'Passwords do not match!';
-                      }
-                      return null;
-                    },
-                    controller: repeatPasswordController,
+                    validator: passwordsMatch,
+                    controller: _repeatPasswordController,
                   ),
-
                   Padding(
                       padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                       child: Row(
@@ -172,18 +155,19 @@ class _SignUpPageState extends State<SignUpPage> {
                         children: <Widget>[
                           // Sign up button
                           ElevatedButton(
-                            child: Text('Sign in'),
                             onPressed: signIn,
+                            child: const Text('Sign in'),
                           ),
 
                           // Sign in button
                           ElevatedButton(
-                              child: Text('Sign up'),
-                              onPressed: () {
-                                if (_formKey.currentState!.validate()) {
-                                  signUp();
-                                }
-                              }),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                signUp();
+                              }
+                            },
+                            child: const Text('Sign up'),
+                          ),
                         ],
                       ))
                 ],
@@ -195,9 +179,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void dispose() {
-    serverAddressController.dispose();
-    usernameController.dispose();
-    passwordController.dispose();
+    // Clean up the controller when the widget is disposed.
+    _serverAddressController.dispose();
+    _usernameController.dispose();
+    _passwordController.dispose();
+
     super.dispose();
   }
 }
