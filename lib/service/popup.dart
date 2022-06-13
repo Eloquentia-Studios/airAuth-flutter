@@ -51,4 +51,28 @@ class Popup {
       },
     );
   }
+
+  /// Confirm a question.
+  static Future<bool> confirm(
+      String title, String message, BuildContext context) async {
+    return await showDialog(
+      context: context,
+      builder: (BuildContext dialogContext) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

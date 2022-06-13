@@ -90,6 +90,21 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushReplacementNamed(_context, '/signin');
   }
 
+  /// Delete an otp.
+  Future<bool> _dismissItem(DismissDirection direction, OtpItem item) async {
+    // Delete item.
+    if (direction == DismissDirection.endToStart) {
+      final answer = await Popup.confirm(
+          'Are you sure?',
+          'Do you want to delete ${item.otp.label} ${item.otp.issuer}?',
+          context);
+      if (answer) await Otps.deleteOtp(item.otp.id);
+      return answer;
+    }
+
+    return false;
+  }
+
   late List<OtpItem> items;
 
   @override
@@ -143,9 +158,9 @@ class _HomePageState extends State<HomePage> {
                 final item = items[index];
                 return Dismissible(
                   key: Key(item.otp.id),
-                  confirmDismiss: (DismissDirection direction) async {
-                    return false;
-                  },
+                  confirmDismiss: (DismissDirection direction) async =>
+                      await _dismissItem(direction, item),
+                  onDismissed: (DismissDirection direction) => _updateOtpItems,
                   background: Container(
                     color: Colors.green,
                   ),
