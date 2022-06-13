@@ -90,10 +90,13 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushReplacementNamed(_context, '/signin');
   }
 
+  late List<OtpItem> items;
+
   @override
   Widget build(BuildContext context) {
     _context = context;
     final otpWidgets = Provider.of<OtpProvider>(context).getOtpItems();
+    items = otpWidgets.map((it) => it).toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -133,8 +136,27 @@ class _HomePageState extends State<HomePage> {
           margin: const EdgeInsets.all(5),
           child: Center(
               child: RefreshIndicator(
-                  child: ListView(children: otpWidgets),
-                  onRefresh: _updateOtpItems)),
+            onRefresh: _updateOtpItems,
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return Dismissible(
+                  key: Key(item.otp.id),
+                  confirmDismiss: (DismissDirection direction) async {
+                    return false;
+                  },
+                  background: Container(
+                    color: Colors.green,
+                  ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                  ),
+                  child: item,
+                );
+              },
+            ),
+          )),
         ));
   }
 }
