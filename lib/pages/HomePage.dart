@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:airauth/components/OtpItem.dart';
 import 'package:airauth/models/Otp.dart';
 import 'package:airauth/providers/otp_provider.dart';
+import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -83,6 +84,12 @@ class _HomePageState extends State<HomePage> {
     final manualOtpEntry = ManualOtpEntry.showForm(_context, callback);
   }
 
+  /// Sign out of the app.
+  void _signOut() async {
+    await Authentication.signOut();
+    Navigator.pushReplacementNamed(_context, '/signin');
+  }
+
   @override
   Widget build(BuildContext context) {
     _context = context;
@@ -95,11 +102,16 @@ class _HomePageState extends State<HomePage> {
           actions: [
             PopupMenuButton(
               onSelected: (value) {
-                if (value == 'add_qr') {
-                  _scanQR();
-                }
-                if (value == 'add_manual') {
-                  _manualInput();
+                switch (value) {
+                  case 'add_qr':
+                    _scanQR();
+                    break;
+                  case 'add_manual':
+                    _manualInput();
+                    break;
+                  case 'sign_out':
+                    _signOut();
+                    break;
                 }
               },
               itemBuilder: (context) => [
@@ -111,7 +123,8 @@ class _HomePageState extends State<HomePage> {
                   value: 'add_manual',
                   child: Text('Manual code'),
                 ),
-                const PopupMenuItem(value: 'settings', child: Text('Settings'))
+                const PopupMenuItem(value: 'settings', child: Text('Settings')),
+                const PopupMenuItem(value: 'sign_out', child: Text('Sign out')),
               ],
             ),
           ],

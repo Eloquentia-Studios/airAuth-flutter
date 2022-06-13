@@ -29,6 +29,11 @@ class Otps {
     await Storage.set('otps', json.encode(otps));
   }
 
+  /// Clear all otps from storage.
+  static Future<void> clear() async {
+    await Storage.delete('otps');
+  }
+
   /// Fetches the otps from the remote server.
   /// Throws an [error] if the request returns a status code other than 200.
   static Future<dynamic> _fetchRemoteOtps() async {
