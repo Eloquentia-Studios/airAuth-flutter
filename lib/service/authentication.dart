@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:airauth/service/otps.dart';
 import 'http.dart';
 import 'storage.dart';
@@ -13,6 +11,16 @@ class Authentication {
   /// Set server address to storage.
   static Future<void> setServerAddress(String serverAddress) async {
     await Storage.set('serverAddress', serverAddress);
+  }
+
+  /// Check if user is signed in.
+  static Future<bool> isLoggedIn() async {
+    try {
+      await Storage.get('token');
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Sign out from the current user.
