@@ -78,4 +78,11 @@ class Otps {
       });
     }
   }
+
+  static String generateOtpUrl(String issuer, String label, String secret) {
+    issuer = Uri.encodeComponent(issuer);
+    label = Uri.encodeComponent(label);
+    secret = Uri.encodeComponent(secret);
+    return 'otpauth://totp/$label?secret=$secret&issuer=$issuer';
+  }
 }

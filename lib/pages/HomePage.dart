@@ -1,8 +1,14 @@
+import 'dart:async';
+
 import 'package:airauth/components/OtpItem.dart';
+import 'package:airauth/models/Otp.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../components/ManualOtpEntry.dart';
+import '../service/popup.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key, required this.title}) : super(key: key);
@@ -49,10 +55,38 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushNamed(_context, '/qrreader');
   }
 
+  void _manualInput() {
+    final callback = (String issuer, String label, String secret) async {
+      try {
+        String otpUrl = Otps.generateOtpUrl(issuer, label, secret);
+        await Otps.addOtp(otpUrl);
+        await Otps.updateOpts();
+        final provider = Provider.of<OtpProvider>(_context, listen: false);
+        provider.clear();
+        provider.addAll(await Otps.getOpts());
+      } catch (e) {
+        // Show snackbar with error.
+        ScaffoldMessenger.of(_context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to add OTP.'),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+            ),
+            backgroundColor: Color.fromARGB(202, 0, 0, 0),
+          ),
+        );
+      }
+    };
+
+    // Show manual input form.
+    final manualOtpEntry = ManualOtpEntry.showForm(_context, callback);
+  }
+
   @override
   Widget build(BuildContext context) {
     _context = context;
-    final otpWidgets = Provider.of<OtpProvider>(context).otpItems;
+    final otpWidgets = Provider.of<OtpProvider>(context).getOtpItems();
 
     return Scaffold(
         appBar: AppBar(
@@ -63,6 +97,9 @@ class _HomePageState extends State<HomePage> {
               onSelected: (value) {
                 if (value == 'add_qr') {
                   _scanQR();
+                }
+                if (value == 'add_manual') {
+                  _manualInput();
                 }
               },
               itemBuilder: (context) => [

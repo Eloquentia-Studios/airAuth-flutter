@@ -37,6 +37,7 @@ class OtpProvider extends ChangeNotifier {
 
   /// Get a copy of the otp items.
   List<OtpItem> getOtpItems() {
+    print(_otpItems.length);
     return [..._otpItems];
   }
 }
