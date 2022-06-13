@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/storage.dart';
-import '../models/Otp.dart';
+import '../models/otp.dart';
 import 'http.dart';
 
 class Otps {
   /// Get otp items from storage.
-  static Future<List<Otp>> getOpts() async {
+  static Future<List<Otp>> getOtps() async {
     final otpJson = await Storage.get('otps');
     final otps = json.decode(otpJson) ?? {'otps': []};
 
@@ -20,7 +20,7 @@ class Otps {
   }
 
   /// Update the otps for the user.
-  static Future<void> updateOpts() async {
+  static Future<void> updateOtps() async {
     final otps = await _fetchRemoteOtps();
     await _saveOtps(otps);
   }
@@ -45,7 +45,7 @@ class Otps {
     final response = await Http.get(
       '$serverAddress/api/v1/otp',
       {
-        'Authorization': 'Bearer ${await Storage.get('token')}',
+        'Authorization': 'Bearer ${await Authentication.getToken()}',
       },
     );
 
@@ -71,7 +71,7 @@ class Otps {
     final response = await Http.post(
       '$serverAddress/api/v1/otp',
       {
-        'Authorization': 'Bearer ${await Storage.get('token')}',
+        'Authorization': 'Bearer ${await Authentication.getToken()}',
       },
       {"otpurl": otpUrl},
     );
@@ -93,7 +93,7 @@ class Otps {
 
     // Request otps from server.
     final response = await Http.delete('$serverAddress/api/v1/otp/$id', {
-      'Authorization': 'Bearer ${await Storage.get('token')}',
+      'Authorization': 'Bearer ${await Authentication.getToken()}',
     }, {});
 
     // Check response status.
@@ -111,14 +111,12 @@ class Otps {
     final codeLength = code.length;
     switch (codeLength) {
       case 6:
+      case 9:
         return code.replaceAllMapped(
             RegExp(r'(.{3})'), (match) => '${match[0]} ');
       case 8:
         return code.replaceAllMapped(
             RegExp(r'(.{4})'), (match) => '${match[0]} ');
-      case 9:
-        return code.replaceAllMapped(
-            RegExp(r'(.{3})'), (match) => '${match[0]} ');
       case 10:
         return code.replaceAllMapped(
             RegExp(r'(.{5})'), (match) => '${match[0]} ');
@@ -127,6 +125,7 @@ class Otps {
     }
   }
 
+  /// Generate an OTP url from [issuer], [label] and [secret].
   static String generateOtpUrl(String issuer, String label, String secret) {
     issuer = Uri.encodeComponent(issuer);
     label = Uri.encodeComponent(label);

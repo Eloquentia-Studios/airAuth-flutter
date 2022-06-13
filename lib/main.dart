@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'pages/HomePage.dart';
-import 'pages/QRReaderPage.dart';
-import 'pages/SignInPage.dart';
-import 'pages/SignUpPage.dart';
+import 'pages/home_page.dart';
+import 'pages/qr_reader_page.dart';
+import 'pages/sign_in_page.dart';
+import 'pages/sign_up_page.dart';
 import 'providers/otp_provider.dart';
-import 'service/storage.dart';
-import 'pages/LoadingPage.dart';
+import 'pages/loading_page.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -26,13 +25,12 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
         visualDensity: VisualDensity.standard,
       ),
-      home: const LoadingPage(title: 'airAuth'),
+      home: const LoadingPage(),
       routes: {
-        '/signin': (BuildContext context) => const SignInPage(title: 'airAuth'),
-        '/signup': (BuildContext context) => const SignUpPage(title: 'airAuth'),
-        '/home': (BuildContext context) => const HomePage(title: 'airAuth'),
-        '/qrreader': (BuildContext context) =>
-            const QRReaderPage(title: 'airAuth'),
+        '/signin': (BuildContext context) => const SignInPage(),
+        '/signup': (BuildContext context) => const SignUpPage(),
+        '/home': (BuildContext context) => const HomePage(),
+        '/qrreader': (BuildContext context) => const QRReaderPage(),
       },
     );
   }

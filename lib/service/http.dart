@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class Http {
+  /// Send GET request to [url] with [headers].
   static Future<http.Response> get(
       String url, Map<String, String> headers) async {
     http.Response response = await http
@@ -10,6 +11,7 @@ class Http {
     return response;
   }
 
+  /// Send POST request to [url] with [headers] and [body].
   static Future<http.Response> post(
       String url, Map<String, String> headers, Object body) async {
     final bodyJson = json.encode(body);
@@ -19,6 +21,7 @@ class Http {
     return response;
   }
 
+  /// Send PUT request to [url] with [headers] and [body].
   static Future<http.Response> delete(
       String url, Map<String, String> headers, Object body) async {
     final bodyJson = json.encode(body);

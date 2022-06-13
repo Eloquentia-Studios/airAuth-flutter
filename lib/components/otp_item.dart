@@ -1,62 +1,74 @@
 import 'dart:async';
-import 'dart:ui';
-
-import 'package:airauth/models/Otp.dart';
+import 'package:airauth/models/otp.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import '../service/time.dart';
+import 'package:airauth/service/time.dart';
+import 'package:airauth/service/popup.dart';
 
 class OtpItem extends StatefulWidget {
-  late final Otp otp;
+  final Otp otp;
 
-  //const OtpItem({Key? key}) : super(key: key);
-
-  OtpItem(this.otp, {Key? key}) : super(key: key);
+  const OtpItem(this.otp, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _OtpItemState();
 }
 
 class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
-  late Timer updateTimer;
-  bool _notDisposed = true;
+  // Code & progress update timer.
+  late Timer _updateTimer;
+
+  // TOTP period progress.
   var _progress = 0.0;
+
+  // OTP code showing.
   var _isShowing = false;
+
+  // OTP code.
   var _otpCode = '';
+
+  // Component build context.
   late BuildContext _context;
 
-  void tapToReveal() {
+  /// Toggle showing otp code.
+  void _tapToReveal() {
+    _updateOtpCode();
     setState(() {
-      final code = widget.otp.getCode();
-      _otpCode = Otps.formatOtp(code);
       _isShowing = !_isShowing;
     });
   }
 
-  void updateProgress() {
-    var period = widget.otp.period * 1000;
+  /// Update otp code and progress.
+  void _updateProgress() {
+    // Calculate progress.
+    var period = widget.otp.getPeriod() * 1000;
     var timeLeft = Time.getTimeLeftInPeriod(period);
     var progress = 1 - (timeLeft / period);
-    if (progress < _progress) {
-      final code = widget.otp.getCode();
-      _otpCode = Otps.formatOtp(code);
-    }
 
-    if (_notDisposed) {
-      setState(() {
-        _progress = progress;
-      });
-    }
+    // Update otp code after each period.
+    if (progress < _progress) _updateOtpCode();
+
+    // Update progress if not disposed.
+    if (!mounted) return;
+    setState(() {
+      _progress = progress;
+    });
+  }
+
+  /// Update otp code.
+  void _updateOtpCode() {
+    final code = widget.otp.getCode();
+    _otpCode = Otps.formatOtp(code);
   }
 
   @override
   void initState() {
-    updateProgress();
-    updateTimer = Timer.periodic(
-        Duration(milliseconds: 10), (Timer t) => {updateProgress()});
-    print(updateTimer.isActive);
+    // Update otp code and progress.
+    _updateProgress();
+    _updateTimer = Timer.periodic(
+        const Duration(milliseconds: 10), (Timer t) => _updateProgress());
+
     super.initState();
   }
 
@@ -64,36 +76,26 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
   void copyCode() {
     final otpCode = widget.otp.getCode().trim();
     Clipboard.setData(ClipboardData(text: otpCode));
-
-    ScaffoldMessenger.of(_context).showSnackBar(
-      SnackBar(
-        content: Text('Copied to clipboard.'),
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(24),
-        ),
-        backgroundColor: Color.fromARGB(202, 0, 0, 0),
-      ),
-    );
+    Popup.showSnackbar('Copied to clipboard.', _context);
   }
 
   @override
   Widget build(BuildContext context) {
-    updateProgress();
+    // Update context.
     _context = context;
 
     return Center(
         child: Card(
             child: InkWell(
                 onLongPress: copyCode,
-                onTap: tapToReveal,
+                onTap: _tapToReveal,
                 child: Row(children: [
                   Expanded(
                     child: Padding(
-                        padding: EdgeInsets.all(0),
+                        padding: const EdgeInsets.all(0),
                         child: ListTile(
-                          title: Text(widget.otp.issuer),
-                          subtitle: Text(widget.otp.label),
+                          title: Text(widget.otp.getIssuer()),
+                          subtitle: Text(widget.otp.getLabel()),
                         )),
                   ),
                   Padding(
@@ -139,8 +141,9 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    _notDisposed = false;
-    updateTimer.cancel();
+    // Cancel update timer.
+    _updateTimer.cancel();
+
     super.dispose();
   }
 }

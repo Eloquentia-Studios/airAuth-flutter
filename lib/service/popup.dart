@@ -16,7 +16,7 @@ class Popup {
           content: widget,
           actions: <Widget>[
             TextButton(
-              child: Text('Ok'),
+              child: const Text('Ok'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -38,7 +38,7 @@ class Popup {
           children: <Widget>[
             widget,
             TextButton(
-              child: Text('Ok'),
+              child: const Text('Ok'),
               onPressed: () {
                 if (onClose != null) {
                   onClose();
@@ -73,6 +73,20 @@ class Popup {
           ],
         );
       },
+    );
+  }
+
+  /// Show a snackbar message.
+  static void showSnackbar(String message, BuildContext context) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: const Color.fromARGB(202, 0, 0, 0),
+      ),
     );
   }
 }

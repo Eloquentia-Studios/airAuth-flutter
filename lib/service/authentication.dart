@@ -11,8 +11,28 @@ class Authentication {
   }
 
   /// Set server address to storage.
-  static Future<void> setServerAddress(String serverAddress) async {
+  static Future<void> _setServerAddress(String serverAddress) async {
     await Storage.set('serverAddress', serverAddress);
+  }
+
+  /// Get token from storage.
+  static Future<String> getToken() async {
+    return await Storage.get('token');
+  }
+
+  /// Set [token] to storage.
+  static Future<void> _setToken(String token) async {
+    await Storage.set('token', token);
+  }
+
+  /// Check if user is signed in.
+  static Future<bool> isLoggedIn() async {
+    try {
+      await Storage.get('token');
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Sign out from the current user.
@@ -49,6 +69,39 @@ class Authentication {
     }
 
     // Set server address to storage.
-    await setServerAddress(serverAddress);
+    await _setServerAddress(serverAddress);
+  }
+
+  /// Sign in at [serverAddress] with the given [identifier] and [password].
+  /// Throws an [error] if the request returns a status code other than 200.
+  static Future<void> signIn(
+      String serverAddress, String identifier, String password) async {
+    // Send sign in request to server.
+    final response = await Http.post(
+      '$serverAddress/api/v1/user/login',
+      {},
+      {
+        'identifier': identifier,
+        'password': password,
+      },
+    );
+
+    // Check response status.
+    if (response.statusCode != 200) {
+      throw Exception({
+        'status': response.statusCode,
+        'body': response.body,
+      });
+    }
+
+    // Parse response.
+    final body = json.decode(response.body);
+    if (body['token'] != null) {
+      // Save token to storage.
+      await _setToken(body['token']);
+
+      // Update server address in storage.
+      await _setServerAddress(serverAddress);
+    }
   }
 }
