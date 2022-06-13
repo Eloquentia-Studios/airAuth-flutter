@@ -12,4 +12,9 @@ class Storage {
   static Future<void> set(String key, String value) async {
     await storage.write(key: key, value: value);
   }
+
+  /// Delete the value for the given [key].
+  static Future<void> delete(String key) async {
+    await storage.delete(key: key);
+  }
 }
