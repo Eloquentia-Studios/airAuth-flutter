@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'pages/HomePage.dart';
 import 'pages/QRReaderPage.dart';
 import 'pages/SignInPage.dart';
+import 'pages/SignUpPage.dart';
 import 'providers/otp_provider.dart';
 import 'service/storage.dart';
 import 'pages/LoadingPage.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
       home: const LoadingPage(title: 'airAuth'),
       routes: {
         '/signin': (BuildContext context) => const SignInPage(title: 'airAuth'),
+        '/signup': (BuildContext context) => const SignUpPage(title: 'airAuth'),
         '/home': (BuildContext context) => const HomePage(title: 'airAuth'),
         '/qrreader': (BuildContext context) =>
             const QRReaderPage(title: 'airAuth'),
