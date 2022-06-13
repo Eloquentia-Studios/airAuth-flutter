@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'package:airauth/models/Otp.dart';
 import 'package:flutter/material.dart';
 import '../components/OtpItem.dart';
@@ -8,8 +7,6 @@ import '../service/validation.dart';
 class OtpProvider extends ChangeNotifier {
   /// Internal storage of otp items.
   final List<OtpItem> _otpItems = [];
-
-  UnmodifiableListView<OtpItem> get otpItems => UnmodifiableListView(_otpItems);
 
   /// Add an otp to the list.
   /// [otp] is the otp to add.
@@ -39,7 +36,6 @@ class OtpProvider extends ChangeNotifier {
 
   /// Get a copy of the otp items.
   List<OtpItem> getOtpItems() {
-    print(_otpItems.length);
     return [..._otpItems];
   }
 
