@@ -6,7 +6,7 @@ import 'http.dart';
 
 class Otps {
   /// Get otp items from storage.
-  static Future<List<Otp>> getOpts() async {
+  static Future<List<Otp>> getOtps() async {
     final otpJson = await Storage.get('otps');
     final otps = json.decode(otpJson) ?? {'otps': []};
 
@@ -20,7 +20,7 @@ class Otps {
   }
 
   /// Update the otps for the user.
-  static Future<void> updateOpts() async {
+  static Future<void> updateOtps() async {
     final otps = await _fetchRemoteOtps();
     await _saveOtps(otps);
   }

@@ -29,7 +29,7 @@ class _QRReaderPageState extends State<QRReaderPage> {
       await Otps.updateOpts();
       final provider = Provider.of<OtpProvider>(context, listen: false);
       provider.clear();
-      provider.addAll(await Otps.getOpts());
+      provider.addAll(await Otps.getOtps());
       Navigator.pop(context);
     } catch (e) {
       print(e);

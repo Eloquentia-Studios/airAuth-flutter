@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/signin': (BuildContext context) => const SignInPage(),
         '/signup': (BuildContext context) => const SignUpPage(),
-        '/home': (BuildContext context) => const HomePage(title: 'airAuth'),
+        '/home': (BuildContext context) => const HomePage(),
         '/qrreader': (BuildContext context) =>
             const QRReaderPage(title: 'airAuth'),
       },

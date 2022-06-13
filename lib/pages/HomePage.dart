@@ -1,20 +1,14 @@
 import 'dart:async';
-
 import 'package:airauth/components/OtpItem.dart';
-import 'package:airauth/models/Otp.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/authentication.dart';
-import 'package:airauth/service/otps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../components/ManualOtpEntry.dart';
 import '../service/popup.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -26,28 +20,17 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    _updateOtpItems();
+    _updateOtpItemsFromServer();
   }
 
-  /// Update local otp storage.
-  Future<void> _updateOtpItems() async {
+  /// Fetch latest OTPs from server.
+  Future<void> _updateOtpItemsFromServer() async {
     try {
-      // Load otp items from server.
-      await Otps.updateOpts();
       final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
-      otpProvider.clear();
-      otpProvider.addAll(await Otps.getOpts());
+      await otpProvider.updateFromServer();
     } catch (e) {
-      ScaffoldMessenger.of(_context).showSnackBar(
-        SnackBar(
-          content: const Text('Failed to get OTP items from server.'),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          backgroundColor: Color.fromARGB(202, 0, 0, 0),
-        ),
-      );
+      // Display error message.
+      Popup.showSnackbar('Failed to load OTP items from server.', _context);
     }
   }
 
@@ -56,82 +39,84 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushNamed(_context, '/qrreader');
   }
 
-  void _manualInput() {
-    final callback = (String issuer, String label, String secret) async {
-      try {
-        String otpUrl = Otps.generateOtpUrl(issuer, label, secret);
-        await Otps.addOtp(otpUrl);
-        await Otps.updateOpts();
-        final provider = Provider.of<OtpProvider>(_context, listen: false);
-        provider.clear();
-        provider.addAll(await Otps.getOpts());
-      } catch (e) {
-        // Show snackbar with error.
-        ScaffoldMessenger.of(_context).showSnackBar(
-          SnackBar(
-            content: Text('Failed to add OTP.'),
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(24),
-            ),
-            backgroundColor: Color.fromARGB(202, 0, 0, 0),
-          ),
-        );
-      }
-    };
+  /// Handle manual OTP entry.
+  void _handleManualInputForm(
+      String issuer, String label, String secret) async {
+    try {
+      final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
+      await otpProvider.addToServer(issuer, label, secret);
+    } catch (e) {
+      Popup.showSnackbar('Failed to add OTP.', context);
+    }
+  }
 
-    // Show manual input form.
-    final manualOtpEntry = ManualOtpEntry.showForm(_context, callback);
+  /// Open manual OTP entry form.
+  void _manualInput() {
+    ManualOtpEntry.showForm(_context, _handleManualInputForm);
   }
 
   /// Sign out of the app.
   void _signOut() async {
     await Authentication.signOut();
+    if (!mounted) return;
     Navigator.pushReplacementNamed(_context, '/signin');
   }
 
-  /// Delete an otp.
+  /// Handle OTP item dismissal.
   Future<bool> _dismissItem(DismissDirection direction, OtpItem item) async {
-    // Delete item.
+    // Delete item when swiped right to left.
     if (direction == DismissDirection.endToStart) {
+      // Confirm deletion.
       final answer = await Popup.confirm(
           'Are you sure?',
           'Do you want to delete ${item.otp.label} ${item.otp.issuer}?',
           context);
-      if (answer) await Otps.deleteOtp(item.otp.id);
+
+      // Delete item if confirmed.
+      if (answer) {
+        if (!mounted) return false;
+        final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
+        await otpProvider.deleteFromServer(item.otp.id);
+      }
+
       return answer;
     }
 
+    // Do nothing if swiped left to right. Yet.
     return false;
   }
 
-  late List<OtpItem> items;
+  /// Handle menu item selection.
+  void _handleMenu(String value) {
+    switch (value) {
+      case 'add_qr':
+        _scanQR();
+        break;
+      case 'add_manual':
+        _manualInput();
+        break;
+      case 'sign_out':
+        _signOut();
+        break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    // Update context.
     _context = context;
-    final otpWidgets = Provider.of<OtpProvider>(context).getOtpItems();
-    items = otpWidgets.map((it) => it).toList();
+
+    // Get all OTP items from provider.
+    final otpProvider = Provider.of<OtpProvider>(context);
+    final otpWidgets = otpProvider.getOtpItems();
 
     return Scaffold(
         appBar: AppBar(
-          title: Text(widget.title),
+          title: const Text('airAuth'),
           centerTitle: true,
           actions: [
             PopupMenuButton(
-              onSelected: (value) {
-                switch (value) {
-                  case 'add_qr':
-                    _scanQR();
-                    break;
-                  case 'add_manual':
-                    _manualInput();
-                    break;
-                  case 'sign_out':
-                    _signOut();
-                    break;
-                }
-              },
+              onSelected: _handleMenu,
               itemBuilder: (context) => [
                 const PopupMenuItem(
                   value: 'add_qr',
@@ -151,16 +136,17 @@ class _HomePageState extends State<HomePage> {
           margin: const EdgeInsets.all(5),
           child: Center(
               child: RefreshIndicator(
-            onRefresh: _updateOtpItems,
+            onRefresh: _updateOtpItemsFromServer,
             child: ListView.builder(
-              itemCount: items.length,
+              itemCount: otpWidgets.length,
               itemBuilder: (context, index) {
-                final item = items[index];
+                final item = otpWidgets[index];
                 return Dismissible(
                   key: Key(item.otp.id),
                   confirmDismiss: (DismissDirection direction) async =>
                       await _dismissItem(direction, item),
-                  onDismissed: (DismissDirection direction) => _updateOtpItems,
+                  onDismissed: (DismissDirection direction) =>
+                      _updateOtpItemsFromServer,
                   background: Container(
                     color: Colors.green,
                   ),
