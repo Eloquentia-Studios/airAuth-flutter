@@ -1,19 +1,16 @@
 import 'package:airauth/service/authentication.dart';
 import 'package:flutter/material.dart';
-import '../service/http.dart';
-import 'dart:convert';
 import '../service/popup.dart';
-import '../service/storage.dart';
 
 class SignInPage extends StatefulWidget {
-  const SignInPage({Key? key, required this.title}) : super(key: key);
-  final String title;
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
   State<SignInPage> createState() => _SignInPageState();
 }
 
 class _SignInPageState extends State<SignInPage> {
+  // Initialize form controllers.
   final serverAddressController = TextEditingController();
   final identifierController = TextEditingController();
   final passwordController = TextEditingController();
@@ -24,48 +21,33 @@ class _SignInPageState extends State<SignInPage> {
     _updateServerAddress();
   }
 
+  /// Fetch server address from storage and update the server address controller.
   void _updateServerAddress() async {
     try {
       final serverAddress = await Authentication.getServerAddress();
       serverAddressController.text = serverAddress;
-    } catch (e) {}
+    } catch (_) {}
   }
 
+  /// Sign in with the given [identifier] and [password].
   void signIn() async {
+    // Get request values.
+    final serverAddress = serverAddressController.text;
+    final identifier = identifierController.text;
+    final password = passwordController.text;
+
     try {
-      // Get request values.
-      final serverAddress = serverAddressController.text;
-      final identifier = identifierController.text;
-      final password = passwordController.text;
-
       // Send sign in request to server.
-      final signInUrl = '$serverAddress/api/v1/user/login';
-      final response = await Http.post(signInUrl, {}, {
-        'identifier': identifier,
-        'password': password,
-      });
-
-      // Parse response.
-      final body = json.decode(response.body);
-      if (body['token'] != null) {
-        // Save token to storage.
-        await Storage.set('token', body['token']);
-
-        // Save server address to storage.
-        await Storage.set('serverAddress', serverAddress);
-
-        // Navigate to home page.
-        Navigator.pushReplacementNamed(context, '/home');
-      } else {
-        // Show error message.
-        Popup.show('Error', body['errors'][0], context);
-      }
-
-      // Clear password field
-      passwordController.clear();
+      await Authentication.signIn(serverAddress, identifier, password);
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
+      // Show error message.
       Popup.show('Error', e.toString(), context);
     }
+
+    // Clear password field
+    passwordController.clear();
   }
 
   /// Navigate to sign up page.
@@ -113,19 +95,24 @@ class _SignInPageState extends State<SignInPage> {
               autocorrect: false,
               controller: passwordController,
             ),
-            Row(children: [Text('')]),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                // Sign up button
-                ElevatedButton(
-                  child: Text('Sign up'),
-                  onPressed: signUp,
-                ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  // Sign up button
+                  ElevatedButton(
+                    onPressed: signUp,
+                    child: const Text('Sign up'),
+                  ),
 
-                // Sign in button
-                ElevatedButton(child: Text('Sign in'), onPressed: signIn),
-              ],
+                  // Sign in button
+                  ElevatedButton(
+                    onPressed: signIn,
+                    child: const Text('Sign in'),
+                  ),
+                ],
+              ),
             )
           ],
         ),
@@ -135,9 +122,11 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void dispose() {
+    // Clean up the controller when the widget is disposed.
     serverAddressController.dispose();
     identifierController.dispose();
     passwordController.dispose();
+
     super.dispose();
   }
 }

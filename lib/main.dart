@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
       ),
       home: const LoadingPage(),
       routes: {
-        '/signin': (BuildContext context) => const SignInPage(title: 'airAuth'),
+        '/signin': (BuildContext context) => const SignInPage(),
         '/signup': (BuildContext context) => const SignUpPage(title: 'airAuth'),
         '/home': (BuildContext context) => const HomePage(title: 'airAuth'),
         '/qrreader': (BuildContext context) =>
