@@ -61,9 +61,7 @@ class Otp {
         algorithm: algorithm,
       );
 
-      // Add space every 3 digits.
-      return code.replaceAllMapped(
-          RegExp(r'(.{3})'), (match) => '${match[0]} ');
+      return code;
     } catch (e) {
       return '';
     }

@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:airauth/models/Otp.dart';
+import 'package:airauth/service/otps.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../service/time.dart';
 
@@ -23,10 +25,12 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
   var _progress = 0.0;
   var _isShowing = false;
   var _otpCode = '';
+  late BuildContext _context;
 
   void tapToReveal() {
     setState(() {
-      _otpCode = widget.otp.getCode();
+      final code = widget.otp.getCode();
+      _otpCode = Otps.formatOtp(code);
       _isShowing = !_isShowing;
     });
   }
@@ -35,7 +39,10 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
     var period = widget.otp.period * 1000;
     var timeLeft = Time.getTimeLeftInPeriod(period);
     var progress = 1 - timeLeft / period;
-    if (progress > _progress) _otpCode = widget.otp.getCode();
+    if (progress > _progress) {
+      final code = widget.otp.getCode();
+      _otpCode = Otps.formatOtp(code);
+    }
 
     if (_notDisposed) {
       setState(() {
@@ -53,63 +60,81 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
     super.initState();
   }
 
+  /// Copy otp code to clipboard.
+  void copyCode() {
+    final otpCode = widget.otp.getCode().trim();
+    Clipboard.setData(ClipboardData(text: otpCode));
+
+    ScaffoldMessenger.of(_context).showSnackBar(
+      SnackBar(
+        content: Text('Copied to clipboard.'),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        backgroundColor: Color.fromARGB(202, 0, 0, 0),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     updateProgress();
+    _context = context;
 
     return Center(
-      child: Card(
-        child: Row(children: [
-          Expanded(
-            child: Padding(
-                padding: EdgeInsets.all(0),
-                child: ListTile(
-                  title: Text(widget.otp.issuer),
-                  subtitle: Text(widget.otp.label),
-                )),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              children: [
-                Padding(
-                    padding: const EdgeInsets.all(4),
-                    child: _isShowing
-                        ? Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                                SizedBox(
-                                    child: Text(_otpCode,
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.w500,
-                                        )),
-                                    width: 100),
-                                SizedBox(
-                                    child: LinearProgressIndicator(
-                                        value: _progress,
-                                        backgroundColor: Colors.pink,
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                                Colors.white)),
-                                    height: 3,
-                                    width: 100),
-                              ])
-                        : IconButton(
-                            onPressed: tapToReveal,
-                            icon: const Icon(
-                              Icons.touch_app_sharp,
-                              color: Colors.pink,
-                              size: 30,
-                            ))),
-              ],
-            ),
-          ),
-        ]),
-      ),
-    );
+        child: Card(
+            child: InkWell(
+                onLongPress: copyCode,
+                onTap: tapToReveal,
+                child: Row(children: [
+                  Expanded(
+                    child: Padding(
+                        padding: EdgeInsets.all(0),
+                        child: ListTile(
+                          title: Text(widget.otp.issuer),
+                          subtitle: Text(widget.otp.label),
+                        )),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      children: [
+                        Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: _isShowing
+                                ? Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                        SizedBox(
+                                            width: 100,
+                                            child: Text(_otpCode,
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.w500,
+                                                ))),
+                                        SizedBox(
+                                            height: 3,
+                                            width: 100,
+                                            child: LinearProgressIndicator(
+                                                value: _progress,
+                                                backgroundColor: Colors.pink,
+                                                valueColor:
+                                                    const AlwaysStoppedAnimation<
+                                                        Color>(Colors.white))),
+                                      ])
+                                : const Icon(
+                                    Icons.touch_app_sharp,
+                                    color: Colors.pink,
+                                    size: 30,
+                                  )),
+                      ],
+                    ),
+                  ),
+                ]))));
   }
 
   @override

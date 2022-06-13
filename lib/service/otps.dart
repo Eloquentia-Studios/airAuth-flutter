@@ -79,6 +79,28 @@ class Otps {
     }
   }
 
+  /// Format an OTP code for display.
+  /// [code] is the OTP code.
+  static String formatOtp(String code) {
+    final codeLength = code.length;
+    switch (codeLength) {
+      case 6:
+        return code.replaceAllMapped(
+            RegExp(r'(.{3})'), (match) => '${match[0]} ');
+      case 8:
+        return code.replaceAllMapped(
+            RegExp(r'(.{4})'), (match) => '${match[0]} ');
+      case 9:
+        return code.replaceAllMapped(
+            RegExp(r'(.{3})'), (match) => '${match[0]} ');
+      case 10:
+        return code.replaceAllMapped(
+            RegExp(r'(.{5})'), (match) => '${match[0]} ');
+      default:
+        return code;
+    }
+  }
+
   static String generateOtpUrl(String issuer, String label, String secret) {
     issuer = Uri.encodeComponent(issuer);
     label = Uri.encodeComponent(label);
