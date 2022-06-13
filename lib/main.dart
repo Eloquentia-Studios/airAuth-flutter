@@ -30,8 +30,7 @@ class MyApp extends StatelessWidget {
         '/signin': (BuildContext context) => const SignInPage(),
         '/signup': (BuildContext context) => const SignUpPage(),
         '/home': (BuildContext context) => const HomePage(),
-        '/qrreader': (BuildContext context) =>
-            const QRReaderPage(title: 'airAuth'),
+        '/qrreader': (BuildContext context) => const QRReaderPage(),
       },
     );
   }

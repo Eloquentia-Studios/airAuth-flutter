@@ -1,49 +1,36 @@
 import 'package:airauth/providers/otp_provider.dart';
-import 'package:airauth/service/otps.dart';
-import 'package:airauth/service/validation.dart';
+import 'package:airauth/service/popup.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
 
 class QRReaderPage extends StatefulWidget {
-  const QRReaderPage({Key? key, required this.title}) : super(key: key);
-
-  final String title;
+  const QRReaderPage({Key? key}) : super(key: key);
 
   @override
-  _QRReaderPageState createState() => _QRReaderPageState();
+  State<QRReaderPage> createState() => _QRReaderPageState();
 }
 
 class _QRReaderPageState extends State<QRReaderPage> {
+  // Is a QR code being evaluated right now.
   var _isProcessingQr = false;
 
   /// Add a scanned otp to the server.
   Future<void> _addScannedOtp(String? value) async {
     try {
-      if (_isProcessingQr) return;
-      if (value == null) return;
+      // Check if evaluation should be stopped.
+      if (_isProcessingQr || value == null) return;
       _isProcessingQr = true;
 
-      if (!Validation.validOTPUrl(value)) throw Exception('Invalid OTP URL.');
-      await Otps.addOtp(value);
-      await Otps.updateOpts();
+      // Add otp to server.
       final provider = Provider.of<OtpProvider>(context, listen: false);
-      provider.clear();
-      provider.addAll(await Otps.getOtps());
-      Navigator.pop(context);
-    } catch (e) {
-      print(e);
+      await provider.addUrlToServer(value);
+
+      // Go back to home page.
+      _goBack();
+    } catch (_) {
       _isProcessingQr = false;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Failed to add OTP.'),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(24),
-          ),
-          backgroundColor: Color.fromARGB(202, 0, 0, 0),
-        ),
-      );
+      Popup.showSnackbar('Failed to add OTP.', context);
     }
   }
 
@@ -54,6 +41,7 @@ class _QRReaderPageState extends State<QRReaderPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Define screen size.
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
     final statusBarHeight = MediaQuery.of(context).viewPadding.top;
@@ -74,6 +62,7 @@ class _QRReaderPageState extends State<QRReaderPage> {
         height: height,
         child: Column(
           children: [
+            // Top dark box with exit button.
             Container(
               width: width,
               height: height / 2 - halfBoxSize,
@@ -92,6 +81,8 @@ class _QRReaderPageState extends State<QRReaderPage> {
                 ),
               ),
             ),
+
+            // Middle row with transparent box in middle.
             Row(children: [
               Container(
                 width: width / 2 - halfBoxSize,
@@ -109,6 +100,8 @@ class _QRReaderPageState extends State<QRReaderPage> {
                 color: const Color.fromARGB(100, 0, 0, 0),
               ),
             ]),
+
+            // Bottom dark box.
             Container(
               width: width,
               height: height / 2 - halfBoxSize,

@@ -3,6 +3,7 @@ import 'package:airauth/models/Otp.dart';
 import 'package:flutter/material.dart';
 import '../components/OtpItem.dart';
 import '../service/otps.dart';
+import '../service/validation.dart';
 
 class OtpProvider extends ChangeNotifier {
   /// Internal storage of otp items.
@@ -53,15 +54,22 @@ class OtpProvider extends ChangeNotifier {
 
   /// Add a new otp to the server.
   /// Throws an error if the otp could not be added to the server.
-  Future<void> addToServer(issuer, label, secret) async {
+  Future<void> addToServer(String issuer, String label, String secret) async {
     String otpUrl = Otps.generateOtpUrl(issuer, label, secret);
+    await addUrlToServer(otpUrl);
+  }
+
+  /// Add a new otp url to the server.
+  /// Throws an error if the otp could not be added to the server, or if the otp is invalid.
+  Future<void> addUrlToServer(String otpUrl) async {
+    if (!Validation.validOTPUrl(otpUrl)) throw Exception('Invalid OTP URL.');
     await Otps.addOtp(otpUrl);
     await updateFromServer();
   }
 
   /// Delete an otp from the server.
   /// Throws an error if the otp could not be deleted from the server.
-  Future<void> deleteFromServer(otp) async {
+  Future<void> deleteFromServer(String otp) async {
     await Otps.deleteOtp(otp);
     await updateFromServer();
   }
