@@ -1,3 +1,6 @@
+import 'package:base32/base32.dart';
+import 'package:base32/encodings.dart';
+import 'package:base32/encodings.dart';
 import 'package:otp/otp.dart';
 import '../service/time.dart';
 
@@ -54,11 +57,12 @@ class Otp {
   String getCode() {
     try {
       String code = OTP.generateTOTPCodeString(
-        secret,
+        _padBase32String(secret),
         Time.getLastPeriod(period),
         interval: period,
         length: digits,
         algorithm: algorithm,
+        isGoogle: true,
       );
 
       return code;
@@ -81,6 +85,23 @@ class Otp {
         return Algorithm.SHA512;
       default:
         return Algorithm.SHA1;
+    }
+  }
+
+  /// Pad a base32 string to a multiple of 8 characters.
+  static String _padBase32String(String base32String) {
+    final base32StringLength = base32String.length;
+    switch (base32StringLength % 8) {
+      case 2:
+        return base32String + '======';
+      case 4:
+        return base32String + '====';
+      case 5:
+        return base32String + '===';
+      case 7:
+        return base32String + '==';
+      default:
+        return base32String;
     }
   }
 }
