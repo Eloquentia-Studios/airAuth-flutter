@@ -29,11 +29,33 @@ class _SignUpPageState extends State<SignUpPage> {
     _updateServerAddress();
   }
 
+  /// Update server address from storage.
   void _updateServerAddress() async {
     try {
       final serverAddress = await Authentication.getServerAddress();
       serverAddressController.text = serverAddress;
     } catch (e) {}
+  }
+
+  /// Sign up.
+  Future<void> signUp() async {
+    try {
+      // Get request values.
+      final serverAddress = serverAddressController.text;
+      final username = usernameController.text;
+      final email = emailController.text;
+      final phoneNumber = phoneController.text;
+      final password = passwordController.text;
+
+      // Send sign up request to server.
+      await Authentication.signUp(
+          serverAddress, username, email, phoneNumber, password);
+
+      // Navigate to sign in page.
+      Navigator.pushReplacementNamed(context, '/signin');
+    } catch (e) {
+      Popup.show('Error', e.toString(), context);
+    }
   }
 
   @override
@@ -156,8 +178,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               child: Text('Sign up'),
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  Popup.show(
-                                      'Succeded', 'Passed all checks', context);
+                                  signUp();
                                 }
                               }),
                         ],
