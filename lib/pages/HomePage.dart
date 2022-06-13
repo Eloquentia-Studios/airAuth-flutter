@@ -90,10 +90,28 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushReplacementNamed(_context, '/signin');
   }
 
+  /// Delete an otp.
+  Future<bool> _dismissItem(DismissDirection direction, OtpItem item) async {
+    // Delete item.
+    if (direction == DismissDirection.endToStart) {
+      final answer = await Popup.confirm(
+          'Are you sure?',
+          'Do you want to delete ${item.otp.label} ${item.otp.issuer}?',
+          context);
+      if (answer) await Otps.deleteOtp(item.otp.id);
+      return answer;
+    }
+
+    return false;
+  }
+
+  late List<OtpItem> items;
+
   @override
   Widget build(BuildContext context) {
     _context = context;
     final otpWidgets = Provider.of<OtpProvider>(context).getOtpItems();
+    items = otpWidgets.map((it) => it).toList();
 
     return Scaffold(
         appBar: AppBar(
@@ -133,8 +151,27 @@ class _HomePageState extends State<HomePage> {
           margin: const EdgeInsets.all(5),
           child: Center(
               child: RefreshIndicator(
-                  child: ListView(children: otpWidgets),
-                  onRefresh: _updateOtpItems)),
+            onRefresh: _updateOtpItems,
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                final item = items[index];
+                return Dismissible(
+                  key: Key(item.otp.id),
+                  confirmDismiss: (DismissDirection direction) async =>
+                      await _dismissItem(direction, item),
+                  onDismissed: (DismissDirection direction) => _updateOtpItems,
+                  background: Container(
+                    color: Colors.green,
+                  ),
+                  secondaryBackground: Container(
+                    color: Colors.red,
+                  ),
+                  child: item,
+                );
+              },
+            ),
+          )),
         ));
   }
 }

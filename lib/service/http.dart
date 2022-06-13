@@ -18,4 +18,13 @@ class Http {
         await http.post(Uri.parse(url), headers: headers, body: bodyJson);
     return response;
   }
+
+  static Future<http.Response> delete(
+      String url, Map<String, String> headers, Object body) async {
+    final bodyJson = json.encode(body);
+    headers['Content-Type'] = 'application/json';
+    http.Response response =
+        await http.delete(Uri.parse(url), headers: headers, body: bodyJson);
+    return response;
+  }
 }

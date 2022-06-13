@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/storage.dart';
 import '../models/Otp.dart';
 import 'http.dart';
@@ -74,6 +75,26 @@ class Otps {
       },
       {"otpurl": otpUrl},
     );
+
+    // Check response status.
+    if (response.statusCode != 200) {
+      throw Exception({
+        'status': response.statusCode,
+        'body': response.body,
+      });
+    }
+  }
+
+  /// Delete an otp from the server.
+  /// Throws an [error] if the request returns a status code other than 200.
+  static Future<void> deleteOtp(String id) async {
+    // Get server address.
+    final serverAddress = await Authentication.getServerAddress();
+
+    // Request otps from server.
+    final response = await Http.delete('$serverAddress/api/v1/otp/$id', {
+      'Authorization': 'Bearer ${await Storage.get('token')}',
+    }, {});
 
     // Check response status.
     if (response.statusCode != 200) {
