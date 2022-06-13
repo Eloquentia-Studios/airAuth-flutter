@@ -58,6 +58,11 @@ class _SignUpPageState extends State<SignUpPage> {
     }
   }
 
+  /// Navigate to sign in page.
+  void signIn() {
+    Navigator.pushReplacementNamed(context, '/signin');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -168,9 +173,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           // Sign up button
                           ElevatedButton(
                             child: Text('Sign in'),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
+                            onPressed: signIn,
                           ),
 
                           // Sign in button

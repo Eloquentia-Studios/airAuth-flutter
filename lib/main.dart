@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.pink,
         visualDensity: VisualDensity.standard,
       ),
-      home: const SignUpPage(title: 'airAuth'),
+      home: const LoadingPage(title: 'airAuth'),
       routes: {
         '/signin': (BuildContext context) => const SignInPage(title: 'airAuth'),
         '/signup': (BuildContext context) => const SignUpPage(title: 'airAuth'),
