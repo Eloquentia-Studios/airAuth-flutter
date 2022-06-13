@@ -38,8 +38,8 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
   void updateProgress() {
     var period = widget.otp.period * 1000;
     var timeLeft = Time.getTimeLeftInPeriod(period);
-    var progress = 1 - timeLeft / period;
-    if (progress > _progress) {
+    var progress = 1 - (timeLeft / period);
+    if (progress < _progress) {
       final code = widget.otp.getCode();
       _otpCode = Otps.formatOtp(code);
     }
