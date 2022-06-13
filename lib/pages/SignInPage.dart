@@ -11,9 +11,9 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   // Initialize form controllers.
-  final serverAddressController = TextEditingController();
-  final identifierController = TextEditingController();
-  final passwordController = TextEditingController();
+  final _serverAddressController = TextEditingController();
+  final _identifierController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -25,16 +25,16 @@ class _SignInPageState extends State<SignInPage> {
   void _updateServerAddress() async {
     try {
       final serverAddress = await Authentication.getServerAddress();
-      serverAddressController.text = serverAddress;
+      _serverAddressController.text = serverAddress;
     } catch (_) {}
   }
 
   /// Sign in with the given [identifier] and [password].
   void signIn() async {
     // Get request values.
-    final serverAddress = serverAddressController.text;
-    final identifier = identifierController.text;
-    final password = passwordController.text;
+    final serverAddress = _serverAddressController.text;
+    final identifier = _identifierController.text;
+    final password = _passwordController.text;
 
     try {
       // Send sign in request to server.
@@ -47,7 +47,7 @@ class _SignInPageState extends State<SignInPage> {
     }
 
     // Clear password field
-    passwordController.clear();
+    _passwordController.clear();
   }
 
   /// Navigate to sign up page.
@@ -75,7 +75,7 @@ class _SignInPageState extends State<SignInPage> {
                 labelText: 'Server address',
                 hintText: 'https://airauth.example.com:7331',
               ),
-              controller: serverAddressController,
+              controller: _serverAddressController,
             ),
 
             // Username or email text field
@@ -83,7 +83,7 @@ class _SignInPageState extends State<SignInPage> {
                 decoration: const InputDecoration(
                   labelText: 'Username or email',
                 ),
-                controller: identifierController),
+                controller: _identifierController),
 
             // Password text field
             TextField(
@@ -93,7 +93,7 @@ class _SignInPageState extends State<SignInPage> {
               obscureText: true,
               enableSuggestions: false,
               autocorrect: false,
-              controller: passwordController,
+              controller: _passwordController,
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
@@ -123,9 +123,9 @@ class _SignInPageState extends State<SignInPage> {
   @override
   void dispose() {
     // Clean up the controller when the widget is disposed.
-    serverAddressController.dispose();
-    identifierController.dispose();
-    passwordController.dispose();
+    _serverAddressController.dispose();
+    _identifierController.dispose();
+    _passwordController.dispose();
 
     super.dispose();
   }
