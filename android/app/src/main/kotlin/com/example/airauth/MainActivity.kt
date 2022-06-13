@@ -1,4 +1,4 @@
-package com.example.airauth
+package com.eloquentiastudios.airauth
 
 import io.flutter.embedding.android.FlutterActivity
 
