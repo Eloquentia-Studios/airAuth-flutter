@@ -5,7 +5,6 @@ import 'pages/QRReaderPage.dart';
 import 'pages/SignInPage.dart';
 import 'pages/SignUpPage.dart';
 import 'providers/otp_provider.dart';
-import 'service/storage.dart';
 import 'pages/LoadingPage.dart';
 
 void main() {
