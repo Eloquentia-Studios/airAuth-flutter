@@ -1,5 +1,6 @@
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/popup.dart';
+import 'package:airauth/service/time.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_mobile_vision/qr_camera.dart';
@@ -14,6 +15,7 @@ class QRReaderPage extends StatefulWidget {
 class _QRReaderPageState extends State<QRReaderPage> {
   // Is a QR code being evaluated right now.
   var _isProcessingQr = false;
+  int _lastSnackbar = 0;
 
   /// Add a scanned otp to the server.
   Future<void> _addScannedOtp(String? value) async {
@@ -30,6 +32,9 @@ class _QRReaderPageState extends State<QRReaderPage> {
       _goBack();
     } catch (_) {
       _isProcessingQr = false;
+      final now = Time.getTime();
+      if (now - _lastSnackbar < 5000) return;
+      _lastSnackbar = now;
       Popup.showSnackbar('Failed to add OTP.', context);
     }
   }
