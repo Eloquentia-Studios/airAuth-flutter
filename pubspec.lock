@@ -14,7 +14,7 @@ packages:
       name: base32
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.2"
+    version: "2.1.3"
   boolean_selector:
     dependency: transitive
     description:
