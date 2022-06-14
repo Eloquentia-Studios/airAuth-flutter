@@ -15,6 +15,10 @@ class _SignInPageState extends State<SignInPage> {
   final _identifierController = TextEditingController();
   final _passwordController = TextEditingController();
 
+  // Logos.
+  static const _lightLogo = AssetImage('images/logo/light-logo.png');
+  static const _darkLogo = AssetImage('images/logo/dark-logo.png');
+
   @override
   void initState() {
     super.initState();
@@ -57,6 +61,10 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Detect color theme.
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
         body: Container(
       margin: const EdgeInsets.all(30),
@@ -64,8 +72,8 @@ class _SignInPageState extends State<SignInPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Image(
-              image: AssetImage('images/logo/dark-logo.png'),
+            Image(
+              image: isDark ? _lightLogo : _darkLogo,
               height: 65,
               width: 200,
             ),

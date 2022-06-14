@@ -22,8 +22,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'airAuth',
       theme: ThemeData(
+        brightness: Brightness.light,
         primarySwatch: Colors.pink,
+        backgroundColor: Colors.grey[300],
         visualDensity: VisualDensity.standard,
+        iconTheme: const IconThemeData(color: Colors.pink),
+      ),
+      darkTheme: ThemeData(
+        brightness: Brightness.dark,
+        colorScheme: ColorScheme.fromSwatch(
+          brightness: Brightness.dark,
+          accentColor: Colors.pink[400],
+          primaryColorDark: const Color.fromARGB(255, 236, 64, 122),
+          backgroundColor: Colors.pink[400],
+          primarySwatch: const MaterialColor(0xFFEC407A, {}),
+        ),
+        visualDensity: VisualDensity.standard,
+        iconTheme: IconThemeData(color: Colors.pink[400]),
       ),
       home: const LoadingPage(),
       routes: {
