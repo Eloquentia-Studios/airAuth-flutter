@@ -84,6 +84,10 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
     // Update context.
     _context = context;
 
+    // Detect color theme.
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Center(
         child: Card(
             child: InkWell(
@@ -123,14 +127,17 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
                                             width: 100,
                                             child: LinearProgressIndicator(
                                                 value: _progress,
-                                                backgroundColor: Colors.pink,
+                                                backgroundColor:
+                                                    theme.iconTheme.color,
                                                 valueColor:
-                                                    const AlwaysStoppedAnimation<
-                                                        Color>(Colors.white))),
+                                                    AlwaysStoppedAnimation<
+                                                            Color>(
+                                                        theme
+                                                            .backgroundColor))),
                                       ])
-                                : const Icon(
+                                : Icon(
                                     Icons.touch_app_sharp,
-                                    color: Colors.pink,
+                                    color: theme.iconTheme.color,
                                     size: 30,
                                   )),
                       ],
