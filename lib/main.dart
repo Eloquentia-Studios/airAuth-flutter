@@ -30,11 +30,12 @@ class MyApp extends StatelessWidget {
       darkTheme: ThemeData(
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSwatch(
-            brightness: Brightness.dark,
-            accentColor: Colors.pink[400],
-            primaryColorDark: Colors.pink[400],
-            backgroundColor: Colors.pink[400],
-            primarySwatch: Colors.pink),
+          brightness: Brightness.dark,
+          accentColor: Colors.pink[400],
+          primaryColorDark: Color.fromARGB(255, 236, 64, 122),
+          backgroundColor: Colors.pink[400],
+          primarySwatch: const MaterialColor(0xFFEC407A, {}),
+        ),
         visualDensity: VisualDensity.standard,
         iconTheme: IconThemeData(color: Colors.pink[400]),
       ),
