@@ -19,6 +19,10 @@ class _SignUpPageState extends State<SignUpPage> {
   final _passwordController = TextEditingController();
   final _repeatPasswordController = TextEditingController();
 
+  // Logos.
+  static const _lightLogo = AssetImage('images/logo/light-logo.png');
+  static const _darkLogo = AssetImage('images/logo/dark-logo.png');
+
   // Create a global key that uniquely identifies the Form widget.
   final _formKey = GlobalKey<FormState>();
 
@@ -75,6 +79,10 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Detect color theme.
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
         body: ListView(children: [
       Container(
@@ -85,8 +93,8 @@ class _SignUpPageState extends State<SignUpPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Image(
-                    image: AssetImage('images/logo/dark-logo.png'),
+                  Image(
+                    image: isDark ? _lightLogo : _darkLogo,
                     height: 65,
                     width: 200,
                   ),
