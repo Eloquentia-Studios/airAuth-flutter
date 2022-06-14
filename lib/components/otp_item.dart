@@ -86,7 +86,6 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
 
     // Detect color theme.
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Center(
         child: Card(
