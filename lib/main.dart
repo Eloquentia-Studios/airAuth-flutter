@@ -33,7 +33,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(
           brightness: Brightness.dark,
           accentColor: Colors.pink[400],
-          primaryColorDark: Color.fromARGB(255, 236, 64, 122),
+          primaryColorDark: const Color.fromARGB(255, 236, 64, 122),
           backgroundColor: Colors.pink[400],
           primarySwatch: const MaterialColor(0xFFEC407A, {}),
         ),
