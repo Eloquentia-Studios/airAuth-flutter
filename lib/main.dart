@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         brightness: Brightness.light,
         primarySwatch: Colors.pink,
+        backgroundColor: Colors.grey[300],
         visualDensity: VisualDensity.standard,
         iconTheme: const IconThemeData(color: Colors.pink),
       ),
