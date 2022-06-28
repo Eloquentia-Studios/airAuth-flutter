@@ -13,8 +13,9 @@ class Otp {
   late int _period;
   late Algorithm _algorithm;
 
-  Otp(this._id, this._url) {
+  Otp(this._id, this._url, {String? customIssuer, String? customLabel}) {
     parseUrl();
+    _setCustomIssuerLabel(customIssuer, customLabel);
   }
 
   /// Getters for OTP values.
@@ -85,7 +86,19 @@ class Otp {
 
   /// Create an Otp from json.
   static Otp fromJson(dynamic otpData) {
-    return Otp(otpData['id'], otpData['url']);
+    return Otp(otpData['id'], otpData['url'], customIssuer: otpData['customIssuer'], customLabel: otpData['customLabel']);
+  }
+
+  /// Sets custom issuer and label based on the given [issuer] and [label].
+  void _setCustomIssuerLabel(String? customIssuer, String? customLabel) {
+    if (customIssuer != null) {
+      _issuer = customIssuer;
+    }
+
+    if (customLabel != null) {
+      print('Adding custom label: $customLabel');
+      _label = customLabel;
+    }
   }
 
   /// Convert algorithm string to enum.

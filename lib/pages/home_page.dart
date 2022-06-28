@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:airauth/components/edit_otp.dart';
 import 'package:airauth/components/otp_item.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/authentication.dart';
@@ -50,6 +51,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  /// Handle updating of an OTP.
+  Future<void> _handleOtpUpdate(
+      OtpItem item, String? newIssuer, String? newLabel) async {
+    try {
+      // Make empty strings null.
+      if (newIssuer == '') newIssuer = null;
+      if (newLabel == '') newLabel = null;
+
+      final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
+      await otpProvider.updateOnServer(item.otp.getId(),
+          customIssuer: newIssuer, customLabel: newLabel);
+    } catch (e) {
+      Popup.showSnackbar('Failed to update OTP.', context);
+    }
+  }
+
   /// Open manual OTP entry form.
   void _manualInput() {
     ManualOtpEntry.showForm(_context, _handleManualInputForm);
@@ -82,7 +99,11 @@ class _HomePageState extends State<HomePage> {
       return answer;
     }
 
-    // Do nothing if swiped left to right. Yet.
+    // Edit item when swiped left to right.
+    if (direction == DismissDirection.startToEnd) {
+      EditOtp.showForm(context, item.otp.getIssuer(), item.otp.getLabel(),
+          (newIssuer, newLabel) => _handleOtpUpdate(item, newIssuer, newLabel));
+    }
     return false;
   }
 

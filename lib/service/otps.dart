@@ -85,6 +85,29 @@ class Otps {
     }
   }
 
+  /// Update an otp on the server.
+  /// Throws an [error] if the request returns a status code other than 200.
+  static Future<void> updateOtp(
+      String otpId, String? customIssuer, String? customLabel) async {
+    // Get server address and and token from storage.
+    final serverAddress = await Storage.get('serverAddress');
+
+    // Update otp on the server.
+    final response = await Http.post('$serverAddress/api/v1/otp/$otpId', {
+      'Authorization': 'Bearer ${await Authentication.getToken()}',
+    }, {
+      "issuer": customIssuer,
+      "label": customLabel,
+    });
+
+    if (response.statusCode != 200) {
+      throw Exception({
+        'status': response.statusCode,
+        'body': response.body,
+      });
+    }
+  }
+
   /// Delete an otp from the server.
   /// Throws an [error] if the request returns a status code other than 200.
   static Future<void> deleteOtp(String id) async {
