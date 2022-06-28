@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:airauth/components/edit_otp.dart';
 import 'package:airauth/components/otp_item.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/authentication.dart';
@@ -82,7 +83,10 @@ class _HomePageState extends State<HomePage> {
       return answer;
     }
 
-    // Do nothing if swiped left to right. Yet.
+    // Edit item when swiped left to right.
+    if (direction == DismissDirection.startToEnd) {
+      EditOtp.showForm(context, issuer, label, (p0, p1) => null);
+    }
     return false;
   }
 
