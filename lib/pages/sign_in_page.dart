@@ -66,65 +66,69 @@ class _SignInPageState extends State<SignInPage> {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-        body: Container(
-      margin: const EdgeInsets.all(30),
-      child: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Image(
-              image: isDark ? _lightLogo : _darkLogo,
-              height: 65,
-              width: 200,
-            ),
-            // Server address input
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Server address',
-                hintText: 'https://airauth.example.com:7331',
-              ),
-              controller: _serverAddressController,
-            ),
-
-            // Username or email text field
-            TextField(
-                decoration: const InputDecoration(
-                  labelText: 'Username or email',
+        body: ListView(
+      children: [
+        Container(
+          margin: const EdgeInsets.all(30),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image(
+                  image: isDark ? _lightLogo : _darkLogo,
+                  height: 65,
+                  width: 200,
                 ),
-                controller: _identifierController),
+                // Server address input
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Server address',
+                    hintText: 'https://airauth.example.com:7331',
+                  ),
+                  controller: _serverAddressController,
+                ),
 
-            // Password text field
-            TextField(
-              decoration: const InputDecoration(
-                labelText: 'Password',
-              ),
-              obscureText: true,
-              enableSuggestions: false,
-              autocorrect: false,
-              controller: _passwordController,
+                // Username or email text field
+                TextField(
+                    decoration: const InputDecoration(
+                      labelText: 'Username or email',
+                    ),
+                    controller: _identifierController),
+
+                // Password text field
+                TextField(
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                  ),
+                  obscureText: true,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                  controller: _passwordController,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      // Sign up button
+                      ElevatedButton(
+                        onPressed: signUp,
+                        child: const Text('Sign up'),
+                      ),
+
+                      // Sign in button
+                      ElevatedButton(
+                        onPressed: signIn,
+                        child: const Text('Sign in'),
+                      ),
+                    ],
+                  ),
+                )
+              ],
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  // Sign up button
-                  ElevatedButton(
-                    onPressed: signUp,
-                    child: const Text('Sign up'),
-                  ),
-
-                  // Sign in button
-                  ElevatedButton(
-                    onPressed: signIn,
-                    child: const Text('Sign in'),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+          ),
+        )
+      ],
     ));
   }
 
