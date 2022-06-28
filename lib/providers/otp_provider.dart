@@ -63,6 +63,14 @@ class OtpProvider extends ChangeNotifier {
     await updateFromServer();
   }
 
+  /// Update the [customIssuer] and/or [customLabel] of an otp with the given [otpId].
+  /// Throws an error if the otp could not be updated on the server.
+  Future<void> updateOnServer(String otpId,
+      {String? customIssuer, String? customLabel}) async {
+    await Otps.updateOtp(otpId, customIssuer, customLabel);
+    await updateFromServer();
+  }
+
   /// Delete an otp from the server.
   /// Throws an error if the otp could not be deleted from the server.
   Future<void> deleteFromServer(String otp) async {
