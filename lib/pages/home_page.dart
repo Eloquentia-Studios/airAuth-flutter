@@ -85,7 +85,7 @@ class _HomePageState extends State<HomePage> {
 
     // Edit item when swiped left to right.
     if (direction == DismissDirection.startToEnd) {
-      EditOtp.showForm(context, issuer, label, (p0, p1) => null);
+      EditOtp.showForm(context, item.otp.getIssuer(), item.otp.getLabel(), (p0, p1) => null);
     }
     return false;
   }
