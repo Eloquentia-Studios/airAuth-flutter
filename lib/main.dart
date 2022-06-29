@@ -1,3 +1,4 @@
+import 'package:cryptography_flutter/cryptography_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'pages/home_page.dart';
@@ -8,6 +9,9 @@ import 'providers/otp_provider.dart';
 import 'pages/loading_page.dart';
 
 void main() {
+  // Enable Flutter cryptography
+  FlutterCryptography.enable();
+
   runApp(ChangeNotifierProvider(
       create: (context) => OtpProvider(), child: const MyApp()));
 }

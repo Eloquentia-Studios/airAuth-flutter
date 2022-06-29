@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:airauth/service/encryption.dart';
 import 'package:airauth/service/otps.dart';
 import 'http.dart';
 import 'storage.dart';
@@ -25,6 +26,26 @@ class Authentication {
     await Storage.set('token', token);
   }
 
+  /// Get private key from storage.
+  static Future<String> getPrivateKey() async {
+    return await Storage.get('privateKey');
+  }
+
+  /// Set [privateKey] to storage.
+  static Future<void> _setPrivateKey(String privateKey) async {
+    await Storage.set('privateKey', privateKey);
+  }
+
+  /// Decrypt [encryptedPrivateKey] using [key] and set to storage.
+  static Future<void> _setEncryptedPrivateKey(
+      String encryptedPrivateKey, String key, String iv) async {
+    final privateKey = encryptedPrivateKey.split(" auth ")[0];
+    final auth = encryptedPrivateKey.split(" auth ")[1];
+    final decryptedPrivateKey =
+        await Encryption.decryptSymmetrical(privateKey, key, auth, iv);
+    await _setPrivateKey(decryptedPrivateKey);
+  }
+
   /// Check if user is signed in.
   static Future<bool> isLoggedIn() async {
     try {
@@ -42,6 +63,9 @@ class Authentication {
 
     // Clear token from storage.
     await Storage.delete('token');
+
+    // Clear private key from storage.
+    await Storage.delete('privateKey');
   }
 
   /// Sign up at [serverAddress] with the given [username], [email], [phoneNumber] and [password].
@@ -96,12 +120,20 @@ class Authentication {
 
     // Parse response.
     final body = json.decode(response.body);
-    if (body['token'] != null) {
+
+    if (body['token'] != null &&
+        body['privateKey'] != null &&
+        body['iv'] != null) {
       // Save token to storage.
       await _setToken(body['token']);
 
+      // Save private key to storage.
+      await _setEncryptedPrivateKey(body['privateKey'], password, body['iv']);
+
       // Update server address in storage.
       await _setServerAddress(serverAddress);
+    } else {
+      throw Exception('No token and/or private key in response.');
     }
   }
 }
