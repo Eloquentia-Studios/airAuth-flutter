@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:hex/hex.dart';
+import 'package:ninja/asymmetric/rsa/rsa.dart';
 
 class Encryption {
   /// Decrypt a [cipherText] using [key] & [iv] and authenticate it using [auth].
@@ -13,6 +14,20 @@ class Encryption {
     return utf8.decode(plainBytes);
   }
 
+  static Future<String> decryptAsymmetrical(
+      String cipherText, String privateKeyPem) async {
+    try {
+      // FIX: Doesn't currently work!!!
+      final privateKey = RSAPrivateKey.fromPEM(privateKeyPem);
+      final publicKey = privateKey.toPublicKey;
+      final base64Cipher = HEX.decode(cipherText);
+      return privateKey.decryptToUtf8(base64Cipher);
+    } catch (e) {
+      print(e);
+      return "";
+    }
+  }
+
   /// Create a [SecretBox] from [cipherText] & [iv] and authenticate it using [auth].
   /// [cipherText] and [auth] is assummed to be hex encoded.
   static SecretBox _createSecretBox(String cipherText, String iv, String auth) {
@@ -22,18 +37,18 @@ class Encryption {
     return SecretBox(cipherBytes, nonce: nonce, mac: mac);
   }
 
-  /// Format a [key] to be used in [SecretKey].
-  static Future<List<int>> _formatKey(String key) async {
-    final keyHash = await sha256(key);
-    final base64KeyHash = base64Encode(keyHash);
-    return utf8.encode(base64KeyHash.substring(0, 32));
-  }
-
   /// Sha256 a [string] into [List<int>].
-  static Future<List<int>> sha256(String text) async {
+  static Future<List<int>> _sha256(String text) async {
     final data = utf8.encode(text);
     final algo = Sha256();
     final hash = await algo.hash(data);
     return hash.bytes;
+  }
+
+  /// Format a [key] to be used in [SecretKey].
+  static Future<List<int>> _formatKey(String key) async {
+    final keyHash = await _sha256(key);
+    final base64KeyHash = base64Encode(keyHash);
+    return utf8.encode(base64KeyHash.substring(0, 32));
   }
 }

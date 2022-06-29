@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/storage.dart';
 import '../models/otp.dart';
+import 'encryption.dart';
 import 'http.dart';
 
 class Otps {
@@ -22,7 +23,22 @@ class Otps {
   /// Update the otps for the user.
   static Future<void> updateOtps() async {
     final otps = await _fetchRemoteOtps();
+
+    // Decrypt otps
+    // { "otps": [ {"id":,"url":,"customIssuer":,"customLabel"} ] }
+    for (var otp in otps['otps']) {
+      otp['url'] = await _decryptOtpUrl(otp['url']);
+    }
+
     await _saveOtps(otps);
+  }
+
+  /// Decrypt [url] and return decrypted url.
+  static Future<String> _decryptOtpUrl(String url) async {
+    final key = await Authentication.getPrivateKey();
+    final decryptedUrl = await Encryption.decryptAsymmetrical(url, key);
+    print('decryptedUrl: $decryptedUrl');
+    return decryptedUrl;
   }
 
   /// Saves the [otps] to secure storage.

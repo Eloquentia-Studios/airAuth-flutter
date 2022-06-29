@@ -86,7 +86,9 @@ class Otp {
 
   /// Create an Otp from json.
   static Otp fromJson(dynamic otpData) {
-    return Otp(otpData['id'], otpData['url'], customIssuer: otpData['customIssuer'], customLabel: otpData['customLabel']);
+    return Otp(otpData['id'], otpData['url'],
+        customIssuer: otpData['customIssuer'],
+        customLabel: otpData['customLabel']);
   }
 
   /// Sets custom issuer and label based on the given [issuer] and [label].
