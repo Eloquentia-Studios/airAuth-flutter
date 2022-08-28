@@ -13,8 +13,8 @@ class Otps {
 
     // Convert otp items to list.
     List<Otp> otpItems = [];
-    otps['otps'].forEach((otp) {
-      otpItems.add(Otp.fromJson(otp));
+    await Future.forEach(otps['otps'], (otp) async {
+      otpItems.add(await Otp.fromJson(otp));
     });
 
     return otpItems;
@@ -74,7 +74,7 @@ class Otps {
       {
         'Authorization': 'Bearer ${await Authentication.getToken()}',
       },
-      {"otpurl": otpUrl},
+      {"otpurl": await Encryption.encryptAsymmetrical(otpUrl)},
     );
 
     // Check response status.

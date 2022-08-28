@@ -1,3 +1,4 @@
+import 'package:airauth/service/encryption.dart';
 import 'package:otp/otp.dart';
 import 'package:airauth/service/time.dart';
 
@@ -70,7 +71,7 @@ class Otp {
   String getCode() {
     try {
       String code = OTP.generateTOTPCodeString(
-        _secret,
+        _secret.toUpperCase(),
         Time.getLastPeriod(_period),
         interval: _period,
         length: _digits,
@@ -85,8 +86,17 @@ class Otp {
   }
 
   /// Create an Otp from json.
-  static Otp fromJson(dynamic otpData) {
-    return Otp(otpData['id'], otpData['url'], customIssuer: otpData['customIssuer'], customLabel: otpData['customLabel']);
+  static Future<Otp> fromJson(dynamic otpData) async {
+    final url = await Encryption.decryptAsymmetrical(otpData['url']);
+    final customIssuer = otpData['customIssuer'] != null
+        ? await Encryption.decryptAsymmetrical(otpData['customIssuer'])
+        : null;
+    final customLabel = otpData['customLabel'] != null
+        ? await Encryption.decryptAsymmetrical(otpData['customLabel'])
+        : null;
+
+    return Otp(otpData['id'], url,
+        customIssuer: customIssuer, customLabel: customLabel);
   }
 
   /// Sets custom issuer and label based on the given [issuer] and [label].
