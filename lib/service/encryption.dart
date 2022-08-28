@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:cryptography/cryptography.dart';
 import 'package:hex/hex.dart';
+import 'package:airauth/service/key_pair.dart' as _;
+import 'package:ninja/asymmetric/rsa/rsa.dart';
 
 class Encryption {
   /// Decrypt a [cipherText] using [key] & [iv] and authenticate it using [auth].
@@ -35,5 +37,19 @@ class Encryption {
     final keyHash = await _sha256(key);
     final base64KeyHash = base64Encode(keyHash);
     return utf8.encode(base64KeyHash.substring(0, 32));
+  }
+
+  /// Assymetric encrypt a [plainText] using [publicKey].
+  static Future<String> encryptAsymmetrical(String plainText) async {
+    final publicKeyPem = await _.KeyPair.getPublicKey();
+    final publicKey = RSAPublicKey.fromPEM(publicKeyPem);
+    return publicKey.encryptPkcs1v15ToBase64(plainText);
+  }
+
+  /// Assymetric decrypt a [cipherText] using [privateKey].
+  static Future<String> decryptAsymmetrical(String cipherText) async {
+    final privateKeyPem = await _.KeyPair.getPrivateKey();
+    final privateKey = RSAPrivateKey.fromPEM(privateKeyPem);
+    return privateKey.decryptPkcs1v15ToUtf8(cipherText);
   }
 }
