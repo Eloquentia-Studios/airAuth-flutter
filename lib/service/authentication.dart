@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:airauth/service/encryption.dart';
+import 'package:airauth/service/key_pair.dart';
 import 'package:airauth/service/otps.dart';
 import 'http.dart';
 import 'storage.dart';
@@ -96,9 +98,17 @@ class Authentication {
 
     // Parse response.
     final body = json.decode(response.body);
-    if (body['token'] != null) {
+    if (body['token'] != null &&
+        body['iv'] != null &&
+        body['keyPair'] != null &&
+        body['keyPair']['privateKey'] != null &&
+        body['keyPair']['publicKey'] != null) {
       // Save token to storage.
       await _setToken(body['token']);
+
+      // Decrypt private key and store key pair in storage.
+      await KeyPair.decryptAndSetKeyPair(body['keyPair']['publicKey'],
+          body['keyPair']['privateKey'], password, body['iv']);
 
       // Update server address in storage.
       await _setServerAddress(serverAddress);
