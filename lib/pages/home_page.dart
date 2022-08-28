@@ -175,11 +175,53 @@ class _HomePageState extends State<HomePage> {
                   onDismissed: (DismissDirection direction) =>
                       _updateOtpItemsFromServer,
                   background: Container(
-                    color: Colors.green,
-                  ),
+                      color: Colors.green,
+                      child: Wrap(
+                          alignment: WrapAlignment.start,
+                          direction: Axis.horizontal,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 0,
+                          runSpacing: 0,
+                          runAlignment: WrapAlignment.center,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Wrap(
+                                    direction: Axis.vertical,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: const [
+                                      Icon(
+                                        Icons.edit,
+                                        color: Colors.white,
+                                      ),
+                                      Text('Edit')
+                                    ]))
+                          ])),
                   secondaryBackground: Container(
-                    color: Colors.red,
-                  ),
+                      color: Colors.red,
+                      child: Wrap(
+                          alignment: WrapAlignment.end,
+                          direction: Axis.horizontal,
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 0,
+                          runSpacing: 0,
+                          runAlignment: WrapAlignment.center,
+                          children: [
+                            Padding(
+                                padding: const EdgeInsets.all(20),
+                                child: Wrap(
+                                    direction: Axis.vertical,
+                                    crossAxisAlignment:
+                                        WrapCrossAlignment.center,
+                                    children: const [
+                                      Icon(
+                                        Icons.delete,
+                                        color: Colors.white,
+                                      ),
+                                      Text('Delete')
+                                    ]))
+                          ])),
                   child: item,
                 );
               },
