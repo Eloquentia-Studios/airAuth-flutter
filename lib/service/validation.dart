@@ -30,6 +30,14 @@ class Validation {
     }
   }
 
+  // Check if the given value is a string and not empty.
+  static String? isNotEmptyString(dynamic str, String fieldName) {
+    if (!isString(str) || str == '') {
+      return '$fieldName is required.';
+    }
+    return null;
+  }
+
   /// Check if the given string is a valid username.
   static String? isValidUsername(String? username) {
     if (username == null) return 'Username is required';
