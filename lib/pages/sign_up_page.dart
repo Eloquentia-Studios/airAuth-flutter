@@ -34,6 +34,12 @@ class _SignUpPageState extends State<SignUpPage> {
     _updateServerAddress();
   }
 
+  /// Replaces the current route without saving the navigation history to it.
+  void popAndPushReplacementNamed(String routeName) {
+    Navigator.pop(context);
+    Navigator.pushReplacementNamed(context, routeName);
+  }
+
   /// Update server address from storage.
   void _updateServerAddress() async {
     try {
@@ -58,7 +64,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
       // Navigate to sign in page.
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/signin');
+      popAndPushReplacementNamed('/signin');
     } catch (e) {
       Popup.show('Error', e.toString(), context);
     }
@@ -66,7 +72,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
   /// Navigate to sign in page.
   void signIn() {
-    Navigator.pushReplacementNamed(context, '/signin');
+    popAndPushReplacementNamed('/signin');
   }
 
   /// Check if both passwords match.

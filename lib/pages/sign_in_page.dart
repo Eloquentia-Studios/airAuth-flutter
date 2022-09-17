@@ -56,7 +56,7 @@ class _SignInPageState extends State<SignInPage> {
 
   /// Navigate to sign up page.
   void signUp() {
-    Navigator.pushReplacementNamed(context, '/signup');
+    Navigator.pushNamed(context, '/signup');
   }
 
   @override
