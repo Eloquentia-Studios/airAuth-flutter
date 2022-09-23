@@ -66,7 +66,7 @@ class Validation {
 
   /// Check if the given string is a valid phone number.
   static String? isValidPhoneNumber(String? phoneNumber) {
-    if (phoneNumber == null) return null;
+    if (phoneNumber == null || phoneNumber == "") return null;
     if (!_phoneNumber.hasMatch(phoneNumber)) {
       return 'Phone number is not valid.';
     }
