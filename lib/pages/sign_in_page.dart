@@ -95,27 +95,34 @@ class _SignInPageState extends State<SignInPage> {
                     validator: (value) => Validation.isValidServerUrl(value),
                   ),
 
-                  // Username or email text field
-                  TextFormField(
-                      decoration: const InputDecoration(
-                        labelText: 'Username or email',
-                      ),
-                      controller: _identifierController,
-                      validator: (value) =>
-                          Validation.isNotEmptyString(value, 'Username')),
+                  AutofillGroup(
+                      child: Column(
+                    children: [
+                      TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'Username or email',
+                          ),
+                          autofillHints: const [AutofillHints.username],
+                          controller: _identifierController,
+                          validator: (value) =>
+                              Validation.isNotEmptyString(value, 'Username')),
 
-                  // Password text field
-                  TextFormField(
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                    ),
-                    obscureText: true,
-                    enableSuggestions: false,
-                    autocorrect: false,
-                    controller: _passwordController,
-                    validator: (value) =>
-                        Validation.isNotEmptyString(value, 'Password'),
-                  ),
+                      // Password text field
+                      TextFormField(
+                        decoration: const InputDecoration(
+                          labelText: 'Password',
+                        ),
+                        obscureText: true,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        autofillHints: const [AutofillHints.password],
+                        controller: _passwordController,
+                        validator: (value) =>
+                            Validation.isNotEmptyString(value, 'Password'),
+                      ),
+                    ],
+                  )),
+                  // Username or email text field
 
                   Padding(
                     padding: const EdgeInsets.fromLTRB(0, 15, 0, 0),

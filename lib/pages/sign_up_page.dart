@@ -119,6 +119,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: const InputDecoration(
                         labelText: 'Username',
                       ),
+                      autofillHints: const [AutofillHints.username],
                       validator: (value) => Validation.isValidUsername(value),
                       controller: _usernameController),
 
@@ -126,6 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   TextFormField(
                       decoration: const InputDecoration(
                           labelText: 'Email', hintText: 'example@example.com'),
+                      autofillHints: const [AutofillHints.email],
                       validator: (value) => Validation.isValidEmail(value),
                       controller: _emailController),
 
@@ -134,6 +136,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       decoration: const InputDecoration(
                         labelText: 'Phone number (optional)',
                       ),
+                      autofillHints: const [AutofillHints.telephoneNumber],
                       validator: (value) =>
                           Validation.isValidPhoneNumber(value),
                       controller: _phoneController),
@@ -144,6 +147,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       labelText: 'Password',
                       errorMaxLines: 2,
                     ),
+                    autofillHints: const [AutofillHints.password],
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
@@ -156,6 +160,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: const InputDecoration(
                       labelText: 'Confirm Password',
                     ),
+                    autofillHints: const [AutofillHints.password],
                     obscureText: true,
                     enableSuggestions: false,
                     autocorrect: false,
