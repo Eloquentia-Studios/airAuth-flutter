@@ -24,6 +24,11 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
+  Future<void> _getLocalOtpItems() async {
+    final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
+    await otpProvider.getLocalOtpItems();
+  }
+
   /// Fetch latest OTPs from server.
   Future<void> _updateOtpItemsFromServer() async {
     try {
@@ -130,6 +135,7 @@ class _HomePageState extends State<HomePage> {
     // Update OTP items from server on first load.
     if (firstLoad) {
       firstLoad = false;
+      _getLocalOtpItems();
       _updateOtpItemsFromServer();
     }
 

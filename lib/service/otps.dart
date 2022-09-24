@@ -9,7 +9,7 @@ class Otps {
   /// Get otp items from storage.
   static Future<List<Otp>> getOtps() async {
     final otpJson = await Storage.get('otps');
-    final otps = json.decode(otpJson) ?? {'otps': []};
+    final otps = json.decode(otpJson);
 
     // Convert otp items to list.
     List<Otp> otpItems = [];
