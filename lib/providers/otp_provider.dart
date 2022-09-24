@@ -39,6 +39,12 @@ class OtpProvider extends ChangeNotifier {
     return [..._otpItems];
   }
 
+  // Gets the OTPs from local storage and adds them to the list.
+  Future<void> getLocalOtpItems() async {
+    final otps = await Otps.getOtps();
+    addAll(otps);
+  }
+
   /// Update the otp items from the server.
   /// Throws an error if the otps could not be fetched from the server.
   Future<void> updateFromServer() async {
