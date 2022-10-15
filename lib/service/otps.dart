@@ -97,8 +97,12 @@ class Otps {
     final response = await Http.post('$serverAddress/api/v1/otp/$otpId', {
       'Authorization': 'Bearer ${await Authentication.getToken()}',
     }, {
-      "issuer": customIssuer,
-      "label": customLabel,
+      "issuer": customIssuer != null
+          ? Encryption.encryptAsymmetrical(customIssuer)
+          : null,
+      "label": customLabel != null
+          ? Encryption.encryptAsymmetrical(customLabel)
+          : null,
     });
 
     if (response.statusCode != 200) {
