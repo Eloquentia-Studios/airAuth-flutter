@@ -58,6 +58,7 @@ class OtpProvider extends ChangeNotifier {
   /// Throws an error if the otp could not be added to the server.
   Future<void> addToServer(String issuer, String label, String secret) async {
     String otpUrl = Otps.generateOtpUrl(issuer, label, secret);
+    if (!Validation.validOTPUrl(otpUrl)) throw Exception('Invalid OTP.');
     await addUrlToServer(otpUrl);
   }
 

@@ -1,3 +1,6 @@
+import 'package:airauth/models/Otp.dart';
+import 'package:otp/otp.dart';
+
 class Validation {
   // Define regex for validation.
   static final _alphanumeric = RegExp(r'^\w+$');
@@ -23,11 +26,14 @@ class Validation {
 
   /// Check if the given string is a valid OTP url.
   static bool validOTPUrl(String url) {
-    if (_otpUrl.hasMatch(url)) {
-      return true;
-    } else {
-      return false;
-    }
+    // Check if the url is a valid OTP url.
+    if (!_otpUrl.hasMatch(url)) return false;
+
+    // Create an OTP object from the url.
+    final otp = Otp('', url);
+    if (otp.getCode() == 'Error') return false;
+
+    return true;
   }
 
   // Check if the given value is a string and not empty.
