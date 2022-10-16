@@ -1,4 +1,5 @@
 import 'package:airauth/models/otp.dart';
+import 'package:airauth/service/google_auth_migration.dart';
 import 'package:flutter/material.dart';
 import '../components/otp_item.dart';
 import '../service/otps.dart';
@@ -60,6 +61,30 @@ class OtpProvider extends ChangeNotifier {
     String otpUrl = Otps.generateOtpUrl(issuer, label, secret);
     if (!Validation.validOTPUrl(otpUrl)) throw Exception('Invalid OTP.');
     await addUrlToServer(otpUrl);
+  }
+
+  /// Handle adding of an otp scanned from a QR code.
+  /// Throws an error if the content could not be handled.
+  Future<void> handleQRCode(String content) async {
+    // Handle the content if it is a Google Authenticator migration URL.
+    if (content.startsWith('otpauth-migration://')) {
+      return addGoogleAuthMigrationUrl(content);
+    }
+
+    // Add otp to server.
+    await addUrlToServer(content);
+  }
+
+  /// Add all OTPs from a Google Authenticator migration URL.
+  /// Throws an error if any URL could not be added to the server.
+  void addGoogleAuthMigrationUrl(String url) async {
+    // Parse the migration URL.
+    final otpUrls = GoogleAuthMigration.parseMigrationUrl(url);
+
+    // Add the otps to the server.
+    for (String otpUrl in otpUrls) {
+      await addUrlToServer(otpUrl);
+    }
   }
 
   /// Add a new otp url to the server.

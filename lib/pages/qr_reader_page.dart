@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/popup.dart';
 import 'package:airauth/service/time.dart';
@@ -28,7 +26,7 @@ class _QRReaderPageState extends State<QRReaderPage> {
 
       // Add otp to server.
       final provider = Provider.of<OtpProvider>(context, listen: false);
-      await provider.addUrlToServer(value);
+      await provider.handleQRCode(value);
 
       // Go back to home page.
       _goBack();
