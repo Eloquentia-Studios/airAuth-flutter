@@ -98,10 +98,10 @@ class Otps {
       'Authorization': 'Bearer ${await Authentication.getToken()}',
     }, {
       "issuer": customIssuer != null
-          ? Encryption.encryptAsymmetrical(customIssuer)
+          ? await Encryption.encryptAsymmetrical(customIssuer)
           : null,
       "label": customLabel != null
-          ? Encryption.encryptAsymmetrical(customLabel)
+          ? await Encryption.encryptAsymmetrical(customLabel)
           : null,
     });
 
