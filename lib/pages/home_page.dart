@@ -142,6 +142,7 @@ class _HomePageState extends State<HomePage> {
     // Get all OTP items from provider.
     final otpProvider = Provider.of<OtpProvider>(context);
     final otpWidgets = otpProvider.getOtpItems();
+    otpWidgets.sort((a, b) => a.otp.getIssuer().compareTo(b.otp.getIssuer()));
 
     return Scaffold(
         appBar: AppBar(
