@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:airauth/service/encryption.dart';
+import 'package:airauth/service/http.dart';
 import 'package:airauth/service/key_pair.dart';
 import 'package:airauth/service/otps.dart';
-import 'http.dart';
-import 'storage.dart';
+import 'package:airauth/service/storage.dart';
 
 class Authentication {
   /// Get server address from storage.
@@ -112,6 +111,30 @@ class Authentication {
 
       // Update server address in storage.
       await _setServerAddress(serverAddress);
+    }
+  }
+
+  /// Send a request to the server to refresh the token.
+  static Future<void> refreshToken() async {
+    // Send request to server.
+    final serverAddress = await getServerAddress();
+    final response =
+        await Http.get('$serverAddress/api/v1/user/refresh-token', {
+      'Authorization': 'Bearer ${await Authentication.getToken()}',
+    });
+
+    // Check response status.
+    if (response.statusCode != 200) {
+      throw Exception({
+        'status': response.statusCode,
+        'body': response.body,
+      });
+    }
+
+    // Parse response and save token to storage.
+    final body = json.decode(response.body);
+    if (body['token'] != null) {
+      await _setToken(body['token']);
     }
   }
 }

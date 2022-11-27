@@ -12,6 +12,7 @@ class _LoadingPageState extends State<LoadingPage> {
   /// Check sign in status and navigate to the next page.
   void checkSignInStatus(BuildContext context) async {
     if (await Authentication.isLoggedIn()) {
+      Authentication.refreshToken();
       Navigator.pushReplacementNamed(context, '/home');
     } else {
       Navigator.pushReplacementNamed(context, '/signin');
