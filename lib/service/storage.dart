@@ -1,14 +1,17 @@
+import 'package:airauth/service/error_data.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class Storage {
   // Storage instance.
-  static final storage = FlutterSecureStorage();
+  static const storage = FlutterSecureStorage();
 
   /// Get value from storage.
   /// Throws an [error] if the key does not exist.
   static Future<String> get(String key) async {
     final value = await storage.read(key: key);
-    if (value == null) throw Exception('Key $key not found');
+    if (value == null) {
+      throw KnownErrorException('Storage error', '$key not found in storage.');
+    }
     return value;
   }
 

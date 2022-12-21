@@ -89,6 +89,7 @@ class Popup {
           borderRadius: BorderRadius.circular(24),
         ),
         backgroundColor: const Color.fromARGB(202, 0, 0, 0),
+        duration: Duration(seconds: message.length > 50 ? 10 : 5),
       ),
     );
   }

@@ -1,5 +1,4 @@
 import 'package:airauth/models/Otp.dart';
-import 'package:otp/otp.dart';
 
 class Validation {
   // Define regex for validation.
@@ -105,7 +104,7 @@ class Validation {
     try {
       Uri uri = Uri.parse(url);
       if (uri.host.isEmpty) return 'Server URL must contain a host.';
-    } catch (e) {
+    } catch (_) {
       return 'Server URL is not valid.';
     }
 

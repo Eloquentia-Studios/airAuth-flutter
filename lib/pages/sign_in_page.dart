@@ -1,6 +1,8 @@
 import 'package:airauth/service/authentication.dart';
+import 'package:airauth/service/error_data.dart';
 import 'package:airauth/service/validation.dart';
 import 'package:flutter/material.dart';
+
 import '../service/popup.dart';
 
 class SignInPage extends StatefulWidget {
@@ -50,8 +52,8 @@ class _SignInPageState extends State<SignInPage> {
       if (!mounted) return;
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      // Show error message.
-      Popup.show('Error', e.toString(), context);
+      final error = ErrorData.handleException(e);
+      Popup.show(error.title, error.message, context);
     }
 
     // Clear password field

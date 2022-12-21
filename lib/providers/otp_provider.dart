@@ -1,6 +1,8 @@
 import 'package:airauth/models/otp.dart';
+import 'package:airauth/service/error_data.dart';
 import 'package:airauth/service/google_auth_migration.dart';
 import 'package:flutter/material.dart';
+
 import '../components/otp_item.dart';
 import '../service/otps.dart';
 import '../service/validation.dart';
@@ -59,7 +61,6 @@ class OtpProvider extends ChangeNotifier {
   /// Throws an error if the otp could not be added to the server.
   Future<void> addToServer(String issuer, String label, String secret) async {
     String otpUrl = Otps.generateOtpUrl(issuer, label, secret);
-    if (!Validation.validOTPUrl(otpUrl)) throw Exception('Invalid OTP.');
     await addUrlToServer(otpUrl);
   }
 
@@ -90,7 +91,10 @@ class OtpProvider extends ChangeNotifier {
   /// Add a new otp url to the server.
   /// Throws an error if the otp could not be added to the server, or if the otp is invalid.
   Future<void> addUrlToServer(String otpUrl) async {
-    if (!Validation.validOTPUrl(otpUrl)) throw Exception('Invalid OTP URL.');
+    if (!Validation.validOTPUrl(otpUrl)) {
+      throw KnownErrorException('Invalid OTP',
+          'The OTP data given was malformed. If scanned from a QR code, please try again.');
+    }
     await Otps.addOtp(otpUrl);
     await updateFromServer();
   }

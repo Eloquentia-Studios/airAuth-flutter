@@ -1,7 +1,9 @@
 import 'dart:convert';
+
 import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/encryption.dart';
 import 'package:airauth/service/storage.dart';
+
 import '../models/otp.dart';
 import 'http.dart';
 
@@ -50,14 +52,6 @@ class Otps {
       },
     );
 
-    // Check response status.
-    if (response.statusCode != 200) {
-      throw Exception({
-        'status': response.statusCode,
-        'body': json.decode(response.body),
-      });
-    }
-
     // Parse response.
     return json.decode(response.body);
   }
@@ -76,14 +70,6 @@ class Otps {
       },
       {"otpurl": await Encryption.encryptAsymmetrical(otpUrl)},
     );
-
-    // Check response status.
-    if (response.statusCode != 200) {
-      throw Exception({
-        'status': response.statusCode,
-        'body': response.body,
-      });
-    }
   }
 
   /// Update an otp on the server.
@@ -104,13 +90,6 @@ class Otps {
           ? await Encryption.encryptAsymmetrical(customLabel)
           : null,
     });
-
-    if (response.statusCode != 200) {
-      throw Exception({
-        'status': response.statusCode,
-        'body': response.body,
-      });
-    }
   }
 
   /// Delete an otp from the server.
@@ -123,14 +102,6 @@ class Otps {
     final response = await Http.delete('$serverAddress/api/v1/otp/$id', {
       'Authorization': 'Bearer ${await Authentication.getToken()}',
     }, {});
-
-    // Check response status.
-    if (response.statusCode != 200) {
-      throw Exception({
-        'status': response.statusCode,
-        'body': response.body,
-      });
-    }
   }
 
   /// Format an OTP code for display.
