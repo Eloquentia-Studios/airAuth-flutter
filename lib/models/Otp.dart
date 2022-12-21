@@ -1,6 +1,6 @@
 import 'package:airauth/service/encryption.dart';
-import 'package:otp/otp.dart';
 import 'package:airauth/service/time.dart';
+import 'package:otp/otp.dart';
 
 class Otp {
   // Define OTP values.
@@ -23,6 +23,7 @@ class Otp {
   String getId() => _id;
   String getLabel() => _label;
   String getIssuer() => _issuer;
+  String getUrl() => _url;
   int getPeriod() => _period;
 
   /// Parse OTP data from url.

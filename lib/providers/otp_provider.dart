@@ -95,6 +95,12 @@ class OtpProvider extends ChangeNotifier {
       throw KnownErrorException('Invalid OTP',
           'The OTP data given was malformed. If scanned from a QR code, please try again.');
     }
+
+    if (await Otps.otpUrlExists(otpUrl)) {
+      throw KnownErrorException(
+          'Duplicate OTP', 'The OTP data given is already in your list.');
+    }
+
     await Otps.addOtp(otpUrl);
     await updateFromServer();
   }
