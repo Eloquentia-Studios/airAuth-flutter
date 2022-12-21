@@ -1,10 +1,13 @@
 import 'dart:async';
+
 import 'package:airauth/components/edit_otp.dart';
 import 'package:airauth/components/otp_item.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/authentication.dart';
+import 'package:airauth/service/error_data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../components/manual_otp_entry.dart';
 import '../service/popup.dart';
 
@@ -36,7 +39,8 @@ class _HomePageState extends State<HomePage> {
       await otpProvider.updateFromServer();
     } catch (e) {
       // Display error message.
-      Popup.showSnackbar('Failed to load OTP items from server.', _context);
+      final error = ErrorData.handleException(e);
+      Popup.showSnackbar(error.message, context);
     }
   }
 
@@ -52,7 +56,8 @@ class _HomePageState extends State<HomePage> {
       final otpProvider = Provider.of<OtpProvider>(_context, listen: false);
       await otpProvider.addToServer(issuer, label, secret);
     } catch (e) {
-      Popup.showSnackbar('Failed to add OTP.', context);
+      final error = ErrorData.handleException(e);
+      Popup.showSnackbar(error.message, context);
     }
   }
 
@@ -68,7 +73,8 @@ class _HomePageState extends State<HomePage> {
       await otpProvider.updateOnServer(item.otp.getId(),
           customIssuer: newIssuer, customLabel: newLabel);
     } catch (e) {
-      Popup.showSnackbar('Failed to update OTP.', context);
+      final error = ErrorData.handleException(e);
+      Popup.showSnackbar(error.message, context);
     }
   }
 

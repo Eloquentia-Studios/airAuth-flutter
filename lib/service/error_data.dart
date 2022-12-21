@@ -18,6 +18,8 @@ class ErrorData {
             'The request timed out. Please check your internet connection and try again. If the problem persists, the server may be down or the server address may be incorrect.');
       case HttpException:
         return _handleHttpException(e as HttpException);
+      case KnownErrorException:
+        return ErrorData((e as KnownErrorException).title, e.message);
       default:
         return ErrorData('Unknown error',
             'An unknown error occurred. Please try again later.');
@@ -35,4 +37,11 @@ class ErrorData {
 
     return ErrorData(title, '- ${e.errors.join('\n- ')}');
   }
+}
+
+class KnownErrorException implements Exception {
+  final String title;
+  final String message;
+
+  KnownErrorException(this.title, this.message);
 }

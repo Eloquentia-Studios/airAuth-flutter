@@ -1,4 +1,5 @@
 import 'package:airauth/providers/otp_provider.dart';
+import 'package:airauth/service/error_data.dart';
 import 'package:airauth/service/popup.dart';
 import 'package:airauth/service/time.dart';
 import 'package:flutter/material.dart';
@@ -30,12 +31,16 @@ class _QRReaderPageState extends State<QRReaderPage> {
 
       // Go back to home page.
       _goBack();
-    } catch (_) {
+    } catch (e) {
+      // Only show snackbar if it was not shown in the last 5 seconds.
       _isProcessingQr = false;
       final now = Time.getTime();
       if (now - _lastSnackbar < 5000) return;
       _lastSnackbar = now;
-      Popup.showSnackbar('Failed to add OTP.', context);
+
+      // Show snackbar.
+      final error = ErrorData.handleException(e);
+      Popup.showSnackbar(error.message, context);
     }
   }
 

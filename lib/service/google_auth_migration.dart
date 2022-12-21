@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
+
 import 'package:airauth/models/protobufs/google_auth.pb.dart';
+import 'package:airauth/service/error_data.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:base32/base32.dart';
 
@@ -33,7 +35,8 @@ class GoogleAuthMigration {
     final queryParameters = uri.queryParameters;
     final dataParam = queryParameters['data'];
     if (dataParam == null) {
-      throw Exception('Invalid migration url.');
+      throw KnownErrorException('Invalid migration data',
+          'The scanned GAuth QR code was malformed. Please try again.');
     }
 
     return dataParam;
