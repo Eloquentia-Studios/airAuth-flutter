@@ -61,14 +61,6 @@ class Authentication {
       },
     );
 
-    // Check response status.
-    if (response.statusCode != 200) {
-      throw Exception({
-        'status': response.statusCode,
-        'body': response.body,
-      });
-    }
-
     // Set server address to storage.
     await _setServerAddress(serverAddress);
   }
@@ -86,14 +78,6 @@ class Authentication {
         'password': password,
       },
     );
-
-    // Check response status.
-    if (response.statusCode != 200) {
-      throw Exception({
-        'status': response.statusCode,
-        'body': response.body,
-      });
-    }
 
     // Parse response.
     final body = json.decode(response.body);
@@ -122,14 +106,6 @@ class Authentication {
         await Http.get('$serverAddress/api/v1/user/refresh-token', {
       'Authorization': 'Bearer ${await Authentication.getToken()}',
     });
-
-    // Check response status.
-    if (response.statusCode != 200) {
-      throw Exception({
-        'status': response.statusCode,
-        'body': response.body,
-      });
-    }
 
     // Parse response and save token to storage.
     final body = json.decode(response.body);

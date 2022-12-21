@@ -1,5 +1,7 @@
 import 'package:airauth/service/authentication.dart';
+import 'package:airauth/service/error_data.dart';
 import 'package:flutter/material.dart';
+
 import '../service/popup.dart';
 import '../service/validation.dart';
 
@@ -66,7 +68,8 @@ class _SignUpPageState extends State<SignUpPage> {
       if (!mounted) return;
       popAndPushReplacementNamed('/signin');
     } catch (e) {
-      Popup.show('Error', e.toString(), context);
+      final error = ErrorData.handleException(e);
+      Popup.show(error.title, error.message, context);
     }
   }
 
@@ -181,9 +184,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           // Sign in button
                           ElevatedButton(
                             onPressed: () {
-                              if (_formKey.currentState!.validate()) {
-                                signUp();
-                              }
+                              signUp();
+                              // if (_formKey.currentState!.validate()) {
+                              //   signUp();
+                              // }
                             },
                             child: const Text('Sign up'),
                           ),
