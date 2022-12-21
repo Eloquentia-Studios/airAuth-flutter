@@ -75,7 +75,7 @@ class HttpException implements Exception {
         return errors;
       }
       return ["Unknown error occurred"];
-    } catch (e) {
+    } catch (_) {
       return ["Unknown error occurred"];
     }
   }

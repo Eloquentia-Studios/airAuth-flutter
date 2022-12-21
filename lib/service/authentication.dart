@@ -31,7 +31,7 @@ class Authentication {
     try {
       await Storage.get('token');
       return true;
-    } catch (e) {
+    } catch (_) {
       return false;
     }
   }
