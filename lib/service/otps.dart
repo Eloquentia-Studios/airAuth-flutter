@@ -131,4 +131,15 @@ class Otps {
     secret = Uri.encodeComponent(secret);
     return 'otpauth://totp/$label?secret=$secret&issuer=$issuer';
   }
+
+  /// Check if [otpUrl] already exists.
+  static Future<bool> otpUrlExists(String otpUrl) async {
+    final otps = await getOtps();
+    for (final otp in otps) {
+      if (otp.getUrl() == otpUrl) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
