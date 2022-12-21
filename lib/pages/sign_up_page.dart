@@ -184,10 +184,9 @@ class _SignUpPageState extends State<SignUpPage> {
                           // Sign in button
                           ElevatedButton(
                             onPressed: () {
-                              signUp();
-                              // if (_formKey.currentState!.validate()) {
-                              //   signUp();
-                              // }
+                              if (_formKey.currentState!.validate()) {
+                                signUp();
+                              }
                             },
                             child: const Text('Sign up'),
                           ),
