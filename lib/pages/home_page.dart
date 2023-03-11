@@ -18,13 +18,39 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late BuildContext _context;
   bool firstLoad = true;
+  int lastPaused = 0;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.paused) {
+      lastPaused = DateTime.now().millisecondsSinceEpoch;
+    }
+
+    if (state == AppLifecycleState.resumed) {
+      _updateOtpItemsFromServer();
+
+      // If the app was paused for more than 30 seconds, require re-authentication.
+      if (DateTime.now().millisecondsSinceEpoch - lastPaused > 30 * 1000) {
+        Navigator.pushReplacementNamed(_context, '/');
+      }
+    }
   }
 
   Future<void> _getLocalOtpItems() async {
@@ -47,6 +73,11 @@ class _HomePageState extends State<HomePage> {
   /// Go to QR reader page.
   void _scanQR() {
     Navigator.pushNamed(_context, '/qrreader');
+  }
+
+  /// Go to settings page.
+  void _settings() {
+    Navigator.pushNamed(_context, '/settings');
   }
 
   /// Handle manual OTP entry.
@@ -129,6 +160,9 @@ class _HomePageState extends State<HomePage> {
         break;
       case 'sign_out':
         _signOut();
+        break;
+      case 'settings':
+        _settings();
         break;
     }
   }

@@ -1,11 +1,13 @@
+import 'package:airauth/pages/settings_page.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import 'pages/home_page.dart';
+import 'pages/loading_page.dart';
 import 'pages/qr_reader_page.dart';
 import 'pages/sign_in_page.dart';
 import 'pages/sign_up_page.dart';
 import 'providers/otp_provider.dart';
-import 'pages/loading_page.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -23,10 +25,10 @@ class MyApp extends StatelessWidget {
       title: 'airAuth',
       theme: ThemeData(
         brightness: Brightness.light,
-        primarySwatch: Colors.pink,
-        backgroundColor: Colors.grey[300],
         visualDensity: VisualDensity.standard,
         iconTheme: const IconThemeData(color: Colors.pink),
+        colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
+            .copyWith(background: Colors.grey[300]),
       ),
       darkTheme: ThemeData(
         brightness: Brightness.dark,
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
         '/signup': (BuildContext context) => const SignUpPage(),
         '/home': (BuildContext context) => const HomePage(),
         '/qrreader': (BuildContext context) => const QRReaderPage(),
+        '/settings': (BuildContext context) => const SettingsPage(),
       },
     );
   }

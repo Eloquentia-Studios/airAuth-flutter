@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:airauth/service/http.dart';
 import 'package:airauth/service/key_pair.dart';
+import 'package:airauth/service/local_authentication.dart';
 import 'package:airauth/service/otps.dart';
 import 'package:airauth/service/storage.dart';
 
@@ -43,6 +44,9 @@ class Authentication {
 
     // Clear token from storage.
     await Storage.delete('token');
+
+    // Disable local auth.
+    await LocalAuthentication.disableLocalAuth();
   }
 
   /// Sign up at [serverAddress] with the given [username], [email], [phoneNumber] and [password].
