@@ -5,6 +5,7 @@ import 'package:airauth/components/otp_item.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/error_data.dart';
+import 'package:easy_search_bar/easy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   late BuildContext _context;
   bool firstLoad = true;
   int lastPaused = 0;
+  String searchQuery = '';
 
   @override
   void initState() {
@@ -167,6 +169,20 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
     }
   }
 
+  /// Search OTP items.
+  List<OtpItem> searchOtpItems(List<OtpItem> otpItems, String query) {
+    if (query.isEmpty) return otpItems;
+
+    final List<OtpItem> searchResults = [];
+    for (final item in otpItems) {
+      if (item.otp.getIssuer().toLowerCase().contains(query.toLowerCase()) ||
+          item.otp.getLabel().toLowerCase().contains(query.toLowerCase())) {
+        searchResults.add(item);
+      }
+    }
+    return searchResults;
+  }
+
   @override
   Widget build(BuildContext context) {
     // Update context.
@@ -181,16 +197,16 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
     // Get all OTP items from provider.
     final otpProvider = Provider.of<OtpProvider>(context);
-    final otpWidgets = otpProvider.getOtpItems();
+    final otpWidgets = searchOtpItems(otpProvider.getOtpItems(), searchQuery);
     otpWidgets.sort((a, b) => a.otp
         .getIssuer()
         .toLowerCase()
         .compareTo(b.otp.getIssuer().toLowerCase()));
 
     return Scaffold(
-        appBar: AppBar(
+        appBar: EasySearchBar(
+          searchBackIconTheme: Theme.of(context).appBarTheme.iconTheme,
           title: const Text('airAuth'),
-          centerTitle: true,
           actions: [
             PopupMenuButton(
               onSelected: _handleMenu,
@@ -208,6 +224,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               ],
             ),
           ],
+          onSearch: (query) => setState(() => searchQuery = query),
         ),
         body: Container(
           margin: const EdgeInsets.all(5),
