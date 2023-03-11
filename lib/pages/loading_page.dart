@@ -1,4 +1,5 @@
 import 'package:airauth/service/authentication.dart';
+import 'package:airauth/service/local_authentication.dart';
 import 'package:flutter/material.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -13,9 +14,23 @@ class _LoadingPageState extends State<LoadingPage> {
   void checkSignInStatus(BuildContext context) async {
     if (await Authentication.isLoggedIn()) {
       Authentication.refreshToken();
-      Navigator.pushReplacementNamed(context, '/home');
+      await verifyLogin(context);
     } else {
       Navigator.pushReplacementNamed(context, '/signin');
+    }
+  }
+
+  /// Verify the user is authenticated.
+  Future<void> verifyLogin(BuildContext context) async {
+    while (true) {
+      final authenticated = !await LocalAuthentication.isLocalAuthEnabled() ||
+          await LocalAuthentication.authenticate(
+              "Dude, you have to be authenticated or we will kill you");
+
+      if (authenticated) {
+        Navigator.pushReplacementNamed(context, '/home');
+        break;
+      }
     }
   }
 

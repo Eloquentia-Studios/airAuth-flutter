@@ -49,6 +49,11 @@ class _HomePageState extends State<HomePage> {
     Navigator.pushNamed(_context, '/qrreader');
   }
 
+  /// Go to settings page.
+  void _settings() {
+    Navigator.pushNamed(_context, '/settings');
+  }
+
   /// Handle manual OTP entry.
   void _handleManualInputForm(
       String issuer, String label, String secret) async {
@@ -129,6 +134,9 @@ class _HomePageState extends State<HomePage> {
         break;
       case 'sign_out':
         _signOut();
+        break;
+      case 'settings':
+        _settings();
         break;
     }
   }
