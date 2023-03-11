@@ -38,8 +38,13 @@ class MyApp extends StatelessWidget {
             .copyWith(background: Colors.grey[300]),
       ),
       darkTheme: ThemeData(
-        appBarTheme:
-            const AppBarTheme(backgroundColor: Color.fromARGB(255, 66, 66, 66)),
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Color.fromARGB(255, 66, 66, 66),
+          foregroundColor: Colors.white,
+          iconTheme: IconThemeData(
+            color: Colors.pink,
+          ),
+        ),
         brightness: Brightness.dark,
         colorScheme: ColorScheme.fromSwatch(
           brightness: Brightness.dark,
