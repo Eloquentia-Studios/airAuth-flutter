@@ -5,6 +5,7 @@ import 'package:airauth/components/otp_item.dart';
 import 'package:airauth/providers/otp_provider.dart';
 import 'package:airauth/service/authentication.dart';
 import 'package:airauth/service/error_data.dart';
+import 'package:easy_search_bar/easy_search_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -188,9 +189,8 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
         .compareTo(b.otp.getIssuer().toLowerCase()));
 
     return Scaffold(
-        appBar: AppBar(
+        appBar: EasySearchBar(
           title: const Text('airAuth'),
-          centerTitle: true,
           actions: [
             PopupMenuButton(
               onSelected: _handleMenu,
@@ -208,6 +208,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               ],
             ),
           ],
+          onSearch: (a) => print(a),
         ),
         body: Container(
           margin: const EdgeInsets.all(5),
