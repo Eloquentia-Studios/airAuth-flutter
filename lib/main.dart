@@ -17,17 +17,20 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // Build app and return it as a widget.
     return MaterialApp(
       title: 'airAuth',
       theme: ThemeData(
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           foregroundColor: Colors.white,
-          backgroundColor: Colors.pink,
-          iconTheme: IconThemeData(
+          backgroundColor: Colors.pink[400],
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 23,
+            fontWeight: FontWeight.bold,
+          ),
+          iconTheme: const IconThemeData(
             color: Colors.white,
           ),
         ),
@@ -35,12 +38,18 @@ class MyApp extends StatelessWidget {
         visualDensity: VisualDensity.standard,
         iconTheme: const IconThemeData(color: Colors.pink),
         colorScheme: ColorScheme.fromSwatch(primarySwatch: Colors.pink)
-            .copyWith(background: Colors.grey[300]),
+            .copyWith(background: Colors.white),
+        cardTheme: const CardTheme(color: Colors.white),
       ),
       darkTheme: ThemeData(
         appBarTheme: const AppBarTheme(
           backgroundColor: Color.fromARGB(255, 66, 66, 66),
           foregroundColor: Colors.white,
+          titleTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 23,
+            fontWeight: FontWeight.w500,
+          ),
           iconTheme: IconThemeData(
             color: Colors.pink,
           ),
@@ -49,10 +58,10 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSwatch(
           brightness: Brightness.dark,
           accentColor: Colors.pink[400],
-          primaryColorDark: const Color.fromARGB(255, 236, 64, 122),
-          backgroundColor: Colors.pink[400],
+          backgroundColor: Colors.grey[900],
           primarySwatch: const MaterialColor(0xFFEC407A, {}),
         ),
+        cardTheme: CardTheme(color: Colors.grey[800]),
         visualDensity: VisualDensity.standard,
         iconTheme: IconThemeData(color: Colors.pink[400]),
       ),

@@ -132,8 +132,8 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
                                                 valueColor:
                                                     AlwaysStoppedAnimation<
                                                             Color>(
-                                                        theme.colorScheme
-                                                            .background))),
+                                                        theme.cardTheme
+                                                            .color!))),
                                       ])
                                 : Icon(
                                     Icons.touch_app_sharp,
