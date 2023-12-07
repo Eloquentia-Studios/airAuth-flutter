@@ -1,4 +1,4 @@
-import 'package:airauth/models/otp.dart';
+import 'package:airauth/models/Otp.dart';
 import 'package:airauth/service/error_data.dart';
 import 'package:airauth/service/google_auth_migration.dart';
 import 'package:flutter/material.dart';

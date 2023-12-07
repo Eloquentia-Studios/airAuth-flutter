@@ -1,10 +1,11 @@
 import 'dart:async';
-import 'package:airauth/models/otp.dart';
+
+import 'package:airauth/models/Otp.dart';
 import 'package:airauth/service/otps.dart';
+import 'package:airauth/service/popup.dart';
+import 'package:airauth/service/time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:airauth/service/time.dart';
-import 'package:airauth/service/popup.dart';
 
 class OtpItem extends StatefulWidget {
   final Otp otp;
@@ -131,8 +132,8 @@ class _OtpItemState extends State<OtpItem> with TickerProviderStateMixin {
                                                 valueColor:
                                                     AlwaysStoppedAnimation<
                                                             Color>(
-                                                        theme
-                                                            .backgroundColor))),
+                                                        theme.colorScheme
+                                                            .background))),
                                       ])
                                 : Icon(
                                     Icons.touch_app_sharp,
